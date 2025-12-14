@@ -53,12 +53,20 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         {
             MapLoader();
             SpawningDaPlayer();
+            Console.SetCursorPosition(xx, yy);
+            {
+                Console.WriteLine($"x{x},y{y}, ? = settings");
+            }
 
             while (moving)
             {
+
                 userInput = Console.ReadLine();
                 Console.Clear();
                 MapLoader();
+
+                
+
 
                 if (userInput == "w")
                 {
@@ -237,7 +245,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
             daMapPositionXBackup = daMapPositionX;
             daMapPositionX = int.Parse(Console.ReadLine()); // 90 - max
-            if (daMapPositionX < 90)
+            if (daMapPositionX > 90)
             {
                 daMapPositionX = 90;
             }
@@ -247,15 +255,35 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
             daMapPositionYBackup = daMapPositionY;
             daMapPositionY = int.Parse(Console.ReadLine()); //14 - max
-            if (daMapPositionY < 14)
+            if (daMapPositionY > 14)
             {
-                daMapPositionX = 14;
+                daMapPositionY = 14;
             }
-            int bbX = daMapPositionXBackup - daMapPositionX;
-            int bbY = daMapPositionYBackup - daMapPositionY;
+            int bbX = 0;
+            int bbY = 0;
+            if (daMapPositionXBackup > daMapPositionX)
+            {
+                 bbX = daMapPositionXBackup - daMapPositionX;
+                 x -= bbX;
+            }
+            else 
+            {
+                bbX = daMapPositionX - daMapPositionXBackup;
+                x += bbX;
+            }
+            if (daMapPositionYBackup > daMapPositionY)
+            {
+                bbX = daMapPositionYBackup - daMapPositionY;
+                y -= bbY;
+            }
+            else 
+            {
+                bbX = daMapPositionY - daMapPositionYBackup;
+                y += bbY;
+            }
 
-            x -= bbX;
-            y -= bbY;
+            
+            
 
             Console.Clear();
         }
