@@ -1,19 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 
 namespace DaGame.MapPart
 {
     internal class MapEngine
     {
+        Random random = new Random();
 
-        public List<List<string>> DaWholeMap = new List<List<string>>();
+        public List<List<List<string>>> DaMap = new List<List<List<string>>>();
+ 
+
+
+
+        private List<string> Stuff = new List<string>() { "Item", "x", "Zombie", "Boss"};
+
 
         private int daMapSizeX = 0;
         private int daMapSizeY = 0;
+
+        private string daCurrentMonster = "";
         public void Run()
         {
             GrabDificulty();
@@ -33,15 +41,15 @@ namespace DaGame.MapPart
                 "   Explain(?)\n" +
                 "   End(end)"
                 );
-                string userInput = Console.ReadLine();
+                string? userInput = Console.ReadLine();
                 Console.Clear();
 
                 switch (userInput)
                 {
                     case "1":
-                          daMapSizeX = 15;
-                          daMapSizeY = 15;
-                          dificultyChosing = false;
+                        daMapSizeX = 15;
+                        daMapSizeY = 15;
+                        dificultyChosing = false;
                         break;
                     case "2":
                         daMapSizeX = 10;
@@ -77,9 +85,9 @@ namespace DaGame.MapPart
                         break;
                 }
 
-                if (endingGame = false)
+                if (!endingGame)
                 {
-                    if (dificultyChosing = false)
+                    if (!dificultyChosing)
                     {
                         Console.Clear();
                         LoadingDaMaps();
@@ -100,7 +108,7 @@ namespace DaGame.MapPart
             else
             {
                 daMapSizeX = userInputX;
-            }    
+            }
             Console.WriteLine("da Hight? (y)");
             int userInputY = int.Parse(Console.ReadLine());
 
@@ -118,9 +126,50 @@ namespace DaGame.MapPart
 
         private void LoadingDaMaps()
         {
+            int i = 0;
+
+            while (i < daMapSizeY)
+            {
+                DaMap.Add(new List<List<string>>());
+
+                for (int j = 0; j < daMapSizeX; j++)
+                {
+                    DaMap[i].Add(new List<string>());
+                    for (int k = 0; k < 9; k++)
+                    {
+                        RandomItemGenerator();
+                        DaMap[i][j].Add(daCurrentMonster);
+                    }
+                }
+                i++;
+            }
+            // i = the y's
+            // j = the x's
+            // k = the items
+
+
+            //---//---//
+            i = 0;
+            int h = 0; //h = j, btw
+            while (i < daMapSizeY)
+            {
+                Console.WriteLine(i + "bestie");
+                foreach (var item in DaMap[i][h])
+                {
+                    Console.WriteLine(h + 1);
+                    Console.WriteLine(item);
+                    h++;
+                }
+                h = 0; i++;
+//---//---//
+                
             
+            }           
+        }
 
-
+        public void RandomItemGenerator()
+        {     
+                daCurrentMonster = Stuff[random.Next(0, Stuff.Count)].ToString();
         }
     }
 }
