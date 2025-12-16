@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DaGame.MapPart;
 
 namespace Polročná_práca_2025_Prvý_rok.MapPart
 {
     internal class VisualMap
     {
+        MapInAMap mapInAMap = new MapInAMap();
+
         private int xx = 5;
         private int yy = 25;
 
@@ -65,12 +68,9 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 Console.Clear();
                 MapLoader();
 
-                
-
-
                 if (userInput == "w")
                 {
-                    CheckingEadges();
+                    CheckingBeforeCheckingEadges();
                     if (offSet)
                     {
                         offSet = false;
@@ -84,7 +84,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 }
                 else if (userInput == "s")
                 {
-                    CheckingEadges();
+                    CheckingBeforeCheckingEadges();
                     if (offSet)
                     {
                         offSet = false;
@@ -98,7 +98,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 }
                 else if (userInput == "a")
                 {
-                    CheckingEadges();
+                    CheckingBeforeCheckingEadges();
                     if (offSet)
                     {
                         offSet = false;
@@ -112,7 +112,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 }
                 else if (userInput == "d")
                 {
-                    CheckingEadges();
+                    CheckingBeforeCheckingEadges();
                     if (offSet)
                     {
                         offSet = false;
@@ -214,9 +214,53 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
 
         }
-        private void CheckingBeforeMoving()
+        private void CheckingBeforeCheckingEadges()
         {
-            CheckingEadges();
+            string direction = "";
+            if (userInput == "a" && x - daMapPositionX == 4 && y - daMapPositionY == 7)
+            {
+                x = 14 + daMapPositionX;
+                y = 7 + daMapPositionY;
+                offSet = true;
+                direction = "left";
+                mapInAMap.CheckingTheRoomMovment(direction);
+
+                Console.WriteLine("left");
+            }
+            else if (userInput == "d" && x - daMapPositionX == 24 && y - daMapPositionY == 7)
+            {
+                x = 14 + daMapPositionX;
+                y = 7 + daMapPositionY;
+                offSet = true;
+                direction = "right";
+                mapInAMap.CheckingTheRoomMovment(direction);
+
+                Console.WriteLine("right");
+            }
+            else if (userInput == "w" && y - daMapPositionY == 2 && x - daMapPositionX == 14)
+            {
+                x = 14 + daMapPositionX;
+                y = 7 + daMapPositionY;
+                offSet = true;
+                direction = "up";
+                mapInAMap.CheckingTheRoomMovment(direction);
+
+                Console.WriteLine("up");
+            }
+            else if (userInput == "s" && y - daMapPositionY == 12 && x - daMapPositionX == 14)
+            {
+                x = 14 + daMapPositionX;
+                y = 7 + daMapPositionY;
+                offSet = true;
+                direction = "down";
+                mapInAMap.CheckingTheRoomMovment(direction);
+
+                Console.WriteLine("down");
+            }
+            else
+            {
+                CheckingEadges();
+            }
         }
         private void SpawningDaPlayer()
         {
