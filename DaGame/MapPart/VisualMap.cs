@@ -259,7 +259,6 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             {
                 CheckingEadges();
             }
-            mapInAMap.CheckingTheRoomMovment(direction);
         }
 
         private void Converting2List(string direction)

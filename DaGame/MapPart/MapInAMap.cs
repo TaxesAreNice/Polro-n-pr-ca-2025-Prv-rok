@@ -35,21 +35,27 @@ namespace DaGame.MapPart
             List<string> daRoom = new List<string>();
             if (direcion == "up")
             {
+                CheckingDaWalls(direcion);
                 y--;
+
             }
             else if (direcion == "down")
             {
+                CheckingDaWalls(direcion);
                 y++;
             }
             else if (direcion == "left")
             {
+                CheckingDaWalls(direcion);
                 x--;
             }
             else if (direcion == "right")
             {
+                CheckingDaWalls(direcion);
                 x++;
             }
-            
+            Console.WriteLine(y);
+            Console.WriteLine(x);
             foreach (var item in mapEngine.DaMap[y][x])
             { daRoom.Add(item); }
             
@@ -57,6 +63,28 @@ namespace DaGame.MapPart
             // i = the y's
             // j = the x's
             // k = the items
+        }
+        private void CheckingDaWalls(string direcion)
+        {
+            int xF = mapEngine.daMapSizeX;
+            int yF = mapEngine.daMapSizeY;
+
+            if (direcion == "up" && y == 0)
+            {
+                y++;
+            }
+            else if (direcion == "down" && y == yF)
+            {
+                y--;
+            }
+            else if (direcion == "left" && x == 0)
+            {
+                x++;
+            }
+            else if (direcion == "right" && x == xF)
+            {
+                x--;
+            }
         }
     }
 }
