@@ -57,7 +57,9 @@ namespace DaGame.MapPart
             Console.WriteLine(y);
             Console.WriteLine(x);
             foreach (var item in mapEngine.DaMap[y][x])
-            { daRoom.Add(item); }
+            { 
+              daRoom.Add(item);
+            }
             
             return daRoom;
             // i = the y's

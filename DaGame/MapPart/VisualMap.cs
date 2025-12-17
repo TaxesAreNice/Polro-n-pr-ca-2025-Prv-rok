@@ -18,6 +18,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private int xx = 5;
         private int yy = 25;
 
+        private int hablyICanFly = 0;
+
         public List<string> daRoom = new List<string>();
 
         private List<string> currentItems = new List<string>();
@@ -43,6 +45,9 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private int x = 14;
         private int y = 7;
 
+        internal int tester = 0;
+
+        private bool starterPlayer = true;
 
         private string userInput = "";
 
@@ -62,8 +67,6 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         }
         private void DaMapThing()
         {
-            MapLoader();
-            SpawningDaPlayer();
             Console.SetCursorPosition(xx, yy);
             {
                 Console.WriteLine($"x{x},y{y}, ? = settings");
@@ -71,7 +74,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
             while (moving)
             {
-
+                MapLoader();
+                SpawningDaPlayer();
                 userInput = Console.ReadLine();
                 Console.Clear();
                 MapLoader();
@@ -152,13 +156,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         }
         private void MapLoader()
         {
+            
             for (int jj = 0; jj < 3; jj++)
             {
-                int yY = 5 * jj;
+                int yY = 5 * jj; // if yY = 0 = first row, if yY = 5 = second row, if yY = 10 = third row
                 int j = 0;
                 for (j = 0; j < 3; j++)
                 {
-                    int xX = 10 * j;
+                    int xX = 10 * j; // now xX = 0 = first column, if xX = 10 = second column, if xX = 20 = third column
 
                     int xU = daMapPositionX + xX;
                     int yU = daMapPositionY + yY;
@@ -175,9 +180,9 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                         {
                             Console.WriteLine(middleBox);
                         }
-                        if (i == 2)
+                        if (i == 2 && starterPlayer == false)
                         {
-                            SpawningDaMonster(xU,yU,i);
+                            SpawningDaMonster(xU, yU, i, xX, yY,j,jj);
                            
                         }
 
@@ -194,6 +199,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     }
                 }
             }
+            hablyICanFly = 0;
         }
         private void CheckingEadges()
         {
@@ -261,13 +267,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
         }
 
-        private void Converting2List(string direction)
+        private List<string> Converting2List(string direction)
         {
             var a = mapInAMap.CheckingTheRoomMovment(direction);
             foreach (var item in a)
             {
                 currentItems.Add(item);
             }
+            return currentItems;
         }
 
         private void SettingThePlayerRoomValue()
@@ -275,6 +282,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             x = 14 + daMapPositionX;
             y = 7 + daMapPositionY;
             offSet = true;
+            starterPlayer = false;
+            currentItems.Clear();
         }
 
         private void SpawningDaPlayer()
@@ -387,13 +396,51 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 SpawningDaPlayer();
             }
         }
-        private void SpawningDaMonster(int xU, int yU, int i)
+        private void SpawningDaMonster(int xU, int yU, int i, int xX, int yY, int j, int jj)
         {
-            Console.SetCursorPosition(xU + 4, yU + i);
+
+            if (yY == 5 && xX == 10)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("x");
-                Console.ResetColor();
+            }
+            else
+            {
+                if (currentItems[j + i] == "Item")
+                {
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.WriteLine(@"-o-");
+                        Console.ResetColor();
+                    }
+                }
+                else if (currentItems[j + i] == "Zombie")
+                {
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.WriteLine(@"/X\");
+                        Console.ResetColor();
+                    }
+                }
+                else if (currentItems[j + i] == "Boss")
+                {
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine(@"/X\");
+                        Console.ResetColor();
+                    }
+                }
+                else
+                {
+
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(" x ");
+                        Console.ResetColor();
+                    }
+                }    
             }
 
         }
