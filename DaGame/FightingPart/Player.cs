@@ -25,5 +25,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
         {
             return maxHP >= 0;
         }
+        int smrdíš = 0;
     }
+
 }
