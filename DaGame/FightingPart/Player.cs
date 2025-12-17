@@ -27,3 +27,6 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
         }
     }
 }
+
+
+
