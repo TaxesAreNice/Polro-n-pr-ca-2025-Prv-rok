@@ -18,8 +18,8 @@ namespace DaGame.MapPart
         private List<string> Stuff = new List<string>() { "Item", "x", "Zombie", "Boss"};
 
 
-        private int daMapSizeX = 0;
-        private int daMapSizeY = 0;
+        public int daMapSizeX = 0;
+        public int daMapSizeY = 0;
 
         private string daCurrentMonster = "";
         public void Run()
@@ -147,8 +147,6 @@ namespace DaGame.MapPart
             // j = the x's
             // k = the items
 
-
-            //---//---//
             i = 0;
             int h = 0; //h = j, btw
             while (i < daMapSizeY)
@@ -161,10 +159,7 @@ namespace DaGame.MapPart
                     h++;
                 }
                 h = 0; i++;
-//---//---//
-                
-            
-            }           
+            }
         }
 
         public void RandomItemGenerator()

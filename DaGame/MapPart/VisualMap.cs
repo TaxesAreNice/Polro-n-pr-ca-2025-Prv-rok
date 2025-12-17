@@ -9,10 +9,18 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 {
     internal class VisualMap
     {
-        MapInAMap mapInAMap = new MapInAMap();
+        MapInAMap mapInAMap;
+        public VisualMap(MapEngine engine)
+        {
+            this.mapInAMap = new MapInAMap(engine);
 
+        }
         private int xx = 5;
         private int yy = 25;
+
+        public List<string> daRoom = new List<string>();
+
+        private List<string> currentItems = new List<string>();
 
         private bool offSet = false;
 
@@ -137,6 +145,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 {
                     Console.WriteLine($"x{x},y{y}, ? = settings");
                 }
+                foreach (var item in daRoom)
+                { Console.WriteLine(item); }
             }
             Console.Clear();
         }
@@ -167,12 +177,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                         }
                         if (i == 2)
                         {
-                            Console.SetCursorPosition(xU + 4, yU + i);
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("x");
-                                Console.ResetColor();
-                            }
+                            SpawningDaMonster(xU,yU,i);
+                           
                         }
 
                         Console.SetCursorPosition(xU + 8, yU + i);
@@ -217,43 +223,35 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private void CheckingBeforeCheckingEadges()
         {
             string direction = "";
+           
             if (userInput == "a" && x - daMapPositionX == 4 && y - daMapPositionY == 7)
             {
-                x = 14 + daMapPositionX;
-                y = 7 + daMapPositionY;
-                offSet = true;
+                SettingThePlayerRoomValue();
                 direction = "left";
-                mapInAMap.CheckingTheRoomMovment(direction);
 
+                Converting2List(direction);
                 Console.WriteLine("left");
             }
             else if (userInput == "d" && x - daMapPositionX == 24 && y - daMapPositionY == 7)
             {
-                x = 14 + daMapPositionX;
-                y = 7 + daMapPositionY;
-                offSet = true;
+                SettingThePlayerRoomValue();
                 direction = "right";
-                mapInAMap.CheckingTheRoomMovment(direction);
+                Converting2List(direction); 
 
                 Console.WriteLine("right");
             }
             else if (userInput == "w" && y - daMapPositionY == 2 && x - daMapPositionX == 14)
             {
-                x = 14 + daMapPositionX;
-                y = 7 + daMapPositionY;
-                offSet = true;
+                SettingThePlayerRoomValue();
                 direction = "up";
-                mapInAMap.CheckingTheRoomMovment(direction);
-
+                Converting2List(direction);
                 Console.WriteLine("up");
             }
             else if (userInput == "s" && y - daMapPositionY == 12 && x - daMapPositionX == 14)
             {
-                x = 14 + daMapPositionX;
-                y = 7 + daMapPositionY;
-                offSet = true;
+                SettingThePlayerRoomValue();
                 direction = "down";
-                mapInAMap.CheckingTheRoomMovment(direction);
+                Converting2List(direction);
 
                 Console.WriteLine("down");
             }
@@ -261,7 +259,25 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             {
                 CheckingEadges();
             }
+            mapInAMap.CheckingTheRoomMovment(direction);
         }
+
+        private void Converting2List(string direction)
+        {
+            var a = mapInAMap.CheckingTheRoomMovment(direction);
+            foreach (var item in a)
+            {
+                currentItems.Add(item);
+            }
+        }
+
+        private void SettingThePlayerRoomValue()
+        {
+            x = 14 + daMapPositionX;
+            y = 7 + daMapPositionY;
+            offSet = true;
+        }
+
         private void SpawningDaPlayer()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -371,6 +387,16 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 MapLoader();
                 SpawningDaPlayer();
             }
+        }
+        private void SpawningDaMonster(int xU, int yU, int i)
+        {
+            Console.SetCursorPosition(xU + 4, yU + i);
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("x");
+                Console.ResetColor();
+            }
+
         }
     }
 }
