@@ -10,7 +10,7 @@ Monster monster = new Monster(100, 5);
 engine engine = new engine();
 MapEngine mapEngine = new MapEngine();
 
-//engine.Play(player, monster);
+engine.Play(player, monster);
 
 mapEngine.Run();
 visualMap.DaVisualMap();
