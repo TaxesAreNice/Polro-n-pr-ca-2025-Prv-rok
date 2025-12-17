@@ -73,7 +73,7 @@ namespace DaGame.MapPart
             {
                 y++;
             }
-            else if (direcion == "down" && y == yF)
+            else if (direcion == "down" && y + 1 == yF)
             {
                 y--;
             }
@@ -81,7 +81,7 @@ namespace DaGame.MapPart
             {
                 x++;
             }
-            else if (direcion == "right" && x == xF)
+            else if (direcion == "right" && x + 1 == xF)
             {
                 x--;
             }
