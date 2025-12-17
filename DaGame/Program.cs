@@ -11,6 +11,7 @@ engine engine = new engine();
 MapEngine mapEngine = new MapEngine();
 
 //engine.Play(player, monster);
-//visualMap.DaVisualMap();
+
 mapEngine.Run();
+visualMap.DaVisualMap();
 
