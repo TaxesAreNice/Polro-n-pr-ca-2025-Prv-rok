@@ -159,11 +159,11 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             
             for (int jj = 0; jj < 3; jj++)
             {
-                int yY = 5 * jj; // if yY = 0 = first row, if yY = 5 = second row, if yY = 10 = third row
+                int yY = 5 * jj; // IF yY = 0 = first row, if yY = 5 = second row, if yY = 10 = third row
                 int j = 0;
                 for (j = 0; j < 3; j++)
                 {
-                    int xX = 10 * j; // now xX = 0 = first column, if xX = 10 = second column, if xX = 20 = third column
+                    int xX = 10 * j; // now xX = 0 = first column, IF xX = 10 = second column, if xX = 20 = third column
 
                     int xU = daMapPositionX + xX;
                     int yU = daMapPositionY + yY;
@@ -406,6 +406,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             {
                 if (currentItems[j + i] == "Item")
                 {
+                    UpAndDownKiller(xU, yU, i);
                     Console.SetCursorPosition(xU + 3, yU + i);
                     {
                         Console.ForegroundColor = ConsoleColor.Gray;
@@ -415,34 +416,96 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 }
                 else if (currentItems[j + i] == "Zombie")
                 {
-                    Console.SetCursorPosition(xU + 3, yU + i);
+                    Console.SetCursorPosition(xU + 4, yU + i - 1);
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.WriteLine(@"o");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
                         Console.WriteLine(@"/X\");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i + 1);
+                    {
+                        Console.WriteLine(@"/ \");
                         Console.ResetColor();
                     }
                 }
                 else if (currentItems[j + i] == "Boss")
                 {
-                    Console.SetCursorPosition(xU + 3, yU + i);
+                    Console.SetCursorPosition(xU + 3, yU + i - 1);
                     {
                         Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine(@" O ");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
                         Console.WriteLine(@"/X\");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i + 1);
+                    {
+                        Console.WriteLine(@"/ \");
+                        Console.ResetColor();
+                    }
+                }
+                else if (currentItems[j + i] == "Orc")
+                {
+                    Console.SetCursorPosition(xU + 3, yU + i - 1);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.WriteLine(@"^=^");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.WriteLine(@"/-\");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i + 1);
+                    {
+                        Console.WriteLine(@"/ \");
+                        Console.ResetColor();
+                    }
+                }
+                else if (currentItems[j + i] == "StoneGolem")
+                {
+                    Console.SetCursorPosition(xU + 3, yU + i - 1);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine(@" _ ");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.WriteLine(@"/O\");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i + 1);
+                    {
+                        Console.WriteLine(@"/ \");
                         Console.ResetColor();
                     }
                 }
                 else
                 {
-
+                    UpAndDownKiller(xU,yU,i);
                     Console.SetCursorPosition(xU + 3, yU + i);
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(" x ");
                         Console.ResetColor();
                     }
-                }    
+                    
+                }
             }
-
+        }
+        private void UpAndDownKiller(int xU, int yU, int i)
+        {
+            Console.SetCursorPosition(xU + 3, yU + i - 1);
+            {
+                Console.WriteLine(@"   ");
+            }
+            Console.SetCursorPosition(xU + 3, yU + i + 1);
+            {
+                Console.WriteLine(@"   ");
+            }
         }
     }
 }
+

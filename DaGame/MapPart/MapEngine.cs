@@ -12,11 +12,16 @@ namespace DaGame.MapPart
 
         public List<List<List<string>>> DaMap = new List<List<List<string>>>();
  
+        private bool itsThere = false;
 
+        private int bosininy = 10;
 
+        private int neun = 9;
 
-        private List<string> Stuff = new List<string>() { "Item", "x", "Zombie", "Boss"};
+        private int bosinichancinyY = 0;
+        private int bosinichancinyX = 0;
 
+        private List<string> Stuff = new List<string>() { "Item", "x", "Zombie", "Orc", "StoneGolem"};
 
         public int daMapSizeX = 0;
         public int daMapSizeY = 0;
@@ -126,45 +131,93 @@ namespace DaGame.MapPart
 
         private void LoadingDaMaps()
         {
+            GettingDaBoss();
+            bool containsHim = false;
+            bool notDoneYet = true;
             int i = 0;
+            
 
             while (i < daMapSizeY)
             {
                 DaMap.Add(new List<List<string>>());
 
+                
                 for (int j = 0; j < daMapSizeX; j++)
                 {
                     DaMap[i].Add(new List<string>());
-                    for (int k = 0; k < 9; k++)
-                    {
-                        RandomItemGenerator();
-                        DaMap[i][j].Add(daCurrentMonster);
+                    
+ 
+                        for (int k = 0; k < neun; k++)
+                        {
+
+                            RandomItemGenerator(containsHim);
+                            DaMap[i][j].Add(daCurrentMonster);
+                        }
                     }
-                }
+                    
+                
+
                 i++;
+               
+                
             }
+
             // i = the y's
             // j = the x's
             // k = the items
+            
+                        i = 0;
+                        int h = 0; //h = j, btw
+                        while (i < daMapSizeY)
+                        {
+                            if (h == 15)
+                            {
+                                h = 14;
+                            }
+                            Console.WriteLine(i + "Y");
+                            foreach (var item in DaMap[i][h])
+                            {
+                                if (item == "Boss")
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine($"x:{h + 1}");
+                                    Console.WriteLine(item);
+                                    Console.ResetColor();
+                                }
+                                else
+                                {
+                                    Console.WriteLine(h + 1);
+                                    Console.WriteLine(item);
+                                }
+                                h++;
 
-            i = 0;
-            int h = 0; //h = j, btw
-            while (i < daMapSizeY)
-            {
-                Console.WriteLine(i + "bestie");
-                foreach (var item in DaMap[i][h])
-                {
-                    Console.WriteLine(h + 1);
-                    Console.WriteLine(item);
-                    h++;
-                }
-                h = 0; i++;
-            }
+                            }
+                            h = 0; i++;
+
+                        }
+            
         }
 
-        public void RandomItemGenerator()
-        {     
+        public void RandomItemGenerator(bool containsHim)
+        {
+            
+
+
+         
+            
                 daCurrentMonster = Stuff[random.Next(0, Stuff.Count)].ToString();
+            
+        }
+        public void SendingTheBossPosition(int y, int x)
+        {
+            Console.WriteLine($"Boss at: y:{y},x:{x}");
+        }
+        private void GettingDaBoss()
+        {
+            //bosinichancinyY = random.Next(0, daMapSizeY);
+            //bosinichancinyX = random.Next(0, daMapSizeX);
+            bosinichancinyY = 0;
+            bosinichancinyX = 0;
         }
     }
 }
