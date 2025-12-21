@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DaGame.FightingPart;
 using DaGame.MapPart;
 
 namespace Polročná_práca_2025_Prvý_rok.MapPart
 {
     internal class VisualMap
     {
+        BossFight bossFight = new BossFight();
+
         MapInAMap mapInAMap;
         public VisualMap(MapEngine engine)
         {
@@ -56,6 +59,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         
         public void DaVisualMap()
         {
+            mapInAMap.BossSpawning();
             settingUpDaPlayer();
             DaMapThing();
         }
@@ -157,6 +161,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private void MapLoader()
         {
             
+
             for (int jj = 0; jj < 3; jj++)
             {
                 int yY = 5 * jj; // IF yY = 0 = first row, if yY = 5 = second row, if yY = 10 = third row
@@ -229,43 +234,82 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private void CheckingBeforeCheckingEadges()
         {
             string direction = "";
-           
+            bool bossHere = false;
+
+            if (currentItems.Contains("Boss"))
+            {
+                bossHere = true;
+            }
+
             if (userInput == "a" && x - daMapPositionX == 4 && y - daMapPositionY == 7)
             {
-                SettingThePlayerRoomValue();
-                direction = "left";
+                if (bossHere && currentItems.Contains("right"))
+                {
+                    bossFight.RunBossFight();
+                    moving = false;
+                }
+                else
+                {
+                    SettingThePlayerRoomValue();
+                    direction = "left";
 
-                Converting2List(direction);
-                Console.WriteLine("left");
+                    Converting2List(direction);
+                    Console.WriteLine("left");
+                }
             }
             else if (userInput == "d" && x - daMapPositionX == 24 && y - daMapPositionY == 7)
             {
-                SettingThePlayerRoomValue();
-                direction = "right";
-                Converting2List(direction); 
+                if (bossHere && currentItems.Contains("left"))
+                {
+                    bossFight.RunBossFight();
+                    moving = false;
+                }
+                else
+                {
+                    SettingThePlayerRoomValue();
+                    direction = "right";
+                    Converting2List(direction);
 
-                Console.WriteLine("right");
+                    Console.WriteLine("right");
+                }
             }
             else if (userInput == "w" && y - daMapPositionY == 2 && x - daMapPositionX == 14)
             {
-                SettingThePlayerRoomValue();
-                direction = "up";
-                Converting2List(direction);
-                Console.WriteLine("up");
+                if (bossHere && currentItems.Contains("down"))
+                {
+                    bossFight.RunBossFight();
+                    moving = false;
+                }
+                else
+                {
+                    SettingThePlayerRoomValue();
+                    direction = "up";
+                    Converting2List(direction);
+                    Console.WriteLine("up");
+                }
             }
             else if (userInput == "s" && y - daMapPositionY == 12 && x - daMapPositionX == 14)
             {
-                SettingThePlayerRoomValue();
-                direction = "down";
-                Converting2List(direction);
+                if (bossHere && currentItems.Contains("up"))
+                {
+                    bossFight.RunBossFight();
+                    moving = false;
+                }
+                else
+                {
+                    SettingThePlayerRoomValue();
+                    direction = "down";
+                    Converting2List(direction);
 
-                Console.WriteLine("down");
+                    Console.WriteLine("down");
+                }
             }
             else
             {
                 CheckingEadges();
             }
         }
+      
 
         private List<string> Converting2List(string direction)
         {
@@ -289,19 +333,19 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private void SpawningDaPlayer()
         {
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.SetCursorPosition(x - 1, y - 1);
+            {
+                Console.WriteLine("   ");
+            }
+
             Console.SetCursorPosition(x - 1, y);
             {
-                Console.WriteLine("|");
-            }
 
-            Console.SetCursorPosition(x, y);
-            {
-
-                Console.WriteLine(movement);
+                Console.WriteLine($"|{movement}|");
             }
-            Console.SetCursorPosition(x + 1, y);
+            Console.SetCursorPosition(x - 1, y + 1);
             {
-                Console.WriteLine("|");
+                Console.WriteLine("   ");
             }
             Console.ResetColor();
         }
@@ -369,6 +413,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 {
                     Console.WriteLine("End the game(end)");
                 }
+                Console.SetCursorPosition(20, 7);
+                {
+                    Console.WriteLine("Admin settings(admin)");
+                }
+                Console.SetCursorPosition(20, 9);
+                {
+                    Console.WriteLine("Back to the game(anything else)");
+                }
 
                 string? userSettingsInput = Console.ReadLine();
                 Console.Clear();
@@ -384,12 +436,16 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     moving = false;
                     settingLoop = false;
                 }
+                else if (userSettingsInput == "admin")
+                {
+                    //add a new loop with a new gui or something...
+                    mapInAMap.BossChecking();
+                    settingLoop = false;
+                    string? adminInput = Console.ReadLine();
+                }
                 else
                 {
-                    Console.SetCursorPosition(20, 6);
-                    {
-                        Console.WriteLine("What?");
-                    }
+                    settingLoop = false;
                 }
                 Console.Clear();
                 MapLoader();

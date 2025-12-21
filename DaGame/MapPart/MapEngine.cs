@@ -18,6 +18,9 @@ namespace DaGame.MapPart
 
         private int neun = 9;
 
+        public int daBossY = 0;
+        public int daBossX = 0;
+
         private int bosinichancinyY = 0;
         private int bosinichancinyX = 0;
 
@@ -95,6 +98,7 @@ namespace DaGame.MapPart
                     if (!dificultyChosing)
                     {
                         Console.Clear();
+                        DaBossPlacer();
                         LoadingDaMaps();
                     }
                 }
@@ -131,7 +135,6 @@ namespace DaGame.MapPart
 
         private void LoadingDaMaps()
         {
-            GettingDaBoss();
             bool containsHim = false;
             bool notDoneYet = true;
             int i = 0;
@@ -166,6 +169,7 @@ namespace DaGame.MapPart
             // j = the x's
             // k = the items
             
+            /*
                         i = 0;
                         int h = 0; //h = j, btw
                         while (i < daMapSizeY)
@@ -195,29 +199,68 @@ namespace DaGame.MapPart
                             h = 0; i++;
 
                         }
+            */
             
         }
 
         public void RandomItemGenerator(bool containsHim)
         {
-            
-
-
-         
-            
                 daCurrentMonster = Stuff[random.Next(0, Stuff.Count)].ToString();
-            
         }
         public void SendingTheBossPosition(int y, int x)
         {
             Console.WriteLine($"Boss at: y:{y},x:{x}");
         }
-        private void GettingDaBoss()
+        
+
+        public List<string> DaBossPlacer()
         {
-            //bosinichancinyY = random.Next(0, daMapSizeY);
-            //bosinichancinyX = random.Next(0, daMapSizeX);
-            bosinichancinyY = 0;
-            bosinichancinyX = 0;
+        List<string> fan = new List<string>();
+
+            daBossY = random.Next(0, daMapSizeY - 1);
+
+            if (daBossY == daMapSizeY - 1)
+            {
+                daBossX = random.Next(0, daMapSizeX - 1);
+            }
+            else if (daBossY == 0)
+            {
+                daBossX = random.Next(0, daMapSizeX - 1);
+            }
+            else
+            {
+                daBossX = random.Next(0, 1);
+
+                if (daBossX == 1)
+                {
+                    daBossX = daMapSizeX - 1;
+                }
+            }
+
+            fan.Add(daBossY.ToString());
+            fan.Add(daBossX.ToString());
+
+            if (daBossY == 0)
+            {
+                fan.Add("down");
+            }
+            else if (daBossY == daMapSizeX - 1)
+            {
+                fan.Add("up");
+            }
+
+            if (daBossX == 0)
+            {
+                fan.Add("right");
+            }
+            else if (daBossX == daMapSizeY - 1)
+            {
+                fan.Add("left");
+            }
+
+
+            return fan;
         }
+        
     }
 }

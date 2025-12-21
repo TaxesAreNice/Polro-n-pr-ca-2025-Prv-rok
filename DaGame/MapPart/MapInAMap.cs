@@ -21,6 +21,7 @@ namespace DaGame.MapPart
         private int y = 0;
 
         List<string> currentItems = new List<string>();
+        List<string> bossLocation = new List<string>();
 
 
         public List<string>  CheckingTheRoomMovment(string direcion)
@@ -60,7 +61,30 @@ namespace DaGame.MapPart
             { 
               daRoom.Add(item);
             }
-            
+            if (y.ToString() == bossLocation[0] && x.ToString() == bossLocation[1])
+            {
+                daRoom.Add("Boss");
+                
+                if (bossLocation.Contains("up"))
+                {
+                    daRoom.Add("up");
+                }
+                if (bossLocation.Contains("down"))
+                {
+                    daRoom.Add("down");
+                }
+                if (bossLocation.Contains("left"))
+                {
+                    daRoom.Add("left");
+                }
+                if (bossLocation.Contains("right"))
+                {
+                    daRoom.Add("right");
+                }
+
+                Console.WriteLine("You can feel the boss is in one of these walls"); ///////////////////// hier, buddy bud!
+            }
+
             return daRoom;
             // i = the y's
             // j = the x's
@@ -87,6 +111,30 @@ namespace DaGame.MapPart
             {
                 x--;
             }
+
+            
+
+        }
+
+        public void BossChecking()
+        {
+            Console.WriteLine("y:");
+                foreach (var item in bossLocation)
+            {
+                Console.WriteLine(item);
+                
+            }
+            Console.WriteLine(":x");
+                
+        }
+        public void BossSpawning()
+        {
+
+            foreach (var item in mapEngine.DaBossPlacer())
+            {
+                bossLocation.Add(item);
+            }
+            
         }
     }
 }
