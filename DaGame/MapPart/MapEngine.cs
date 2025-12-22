@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DaGame.MapPart
 {
@@ -18,6 +19,10 @@ namespace DaGame.MapPart
 
         private int neun = 9;
 
+        private string daFilePath = @"";
+
+        private string dafileMapPath = @"";
+
         public int daBossY = 0;
         public int daBossX = 0;
 
@@ -32,9 +37,47 @@ namespace DaGame.MapPart
         private string daCurrentMonster = "";
         public void Run()
         {
-            GrabDificulty();
-        }
+            bool FirstRun = true;
+            DaPathChoser();
+            FirstRun = DaFileChecker(FirstRun);
 
+            if (FirstRun)
+            {
+                GrabDificulty();
+            }
+            else
+            {
+                GettingDaMapBack();
+            }
+        }
+        private bool DaFileChecker(bool FirstRun)
+        {
+            try
+            { 
+                File.ReadAllText(dafileMapPath);
+                FirstRun = false;
+                Console.WriteLine("ah shit, here we go again");
+            }
+            catch (Exception)
+            {
+                FirstRun = true;
+                Console.WriteLine("first time");
+                string? u = Console.ReadLine();
+            }
+            return FirstRun;
+        }
+        private void DaPathChoser()
+        {
+            Console.WriteLine("Chose a file path(even if you alredy did this)\n   Just create a folder somewhere and grab the path from there");
+            daFilePath = Console.ReadLine();
+            dafileMapPath = daFilePath + "/TheMap.txt";
+            Console.Clear();
+
+        }
+        private void GettingDaMapBack()
+        {
+
+        }
         private void GrabDificulty()
         {
             bool dificultyChosing = true;
@@ -135,6 +178,10 @@ namespace DaGame.MapPart
 
         private void LoadingDaMaps()
         {
+            string daMapText = "";
+            
+            File.WriteAllText(dafileMapPath, daMapText);
+
             bool containsHim = false;
             bool notDoneYet = true;
             int i = 0;
@@ -152,11 +199,13 @@ namespace DaGame.MapPart
  
                         for (int k = 0; k < neun; k++)
                         {
-
-                            RandomItemGenerator(containsHim);
+                            daMapText = daCurrentMonster;
+                            RandomItemGenerator();
                             DaMap[i][j].Add(daCurrentMonster);
+                            File.AppendAllText(dafileMapPath, daMapText + "\n");
+                            daMapText = "";
                         }
-                    }
+                }
                     
                 
 
@@ -203,7 +252,7 @@ namespace DaGame.MapPart
             
         }
 
-        public void RandomItemGenerator(bool containsHim)
+        public void RandomItemGenerator()
         {
                 daCurrentMonster = Stuff[random.Next(0, Stuff.Count)].ToString();
         }
@@ -261,6 +310,18 @@ namespace DaGame.MapPart
 
             return fan;
         }
-        
+        public void DaMapSaver(int xX, int yY, int PML)
+        {
+            int x = xX;
+            int y = yY;
+
+            DaMap[y][x][PML] = "x";
+            DaMapFileSaver();
+
+        }
+        private void DaMapFileSaver()
+        {
+            
+        }
     }
 }

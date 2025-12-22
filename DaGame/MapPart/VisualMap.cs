@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DaGame.FightingPart;
 using DaGame.MapPart;
+using Polročná_práca_2025_Prvý_rok.FightingPart;
 
 namespace Polročná_práca_2025_Prvý_rok.MapPart
 {
@@ -12,14 +13,18 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
     {
         BossFight bossFight = new BossFight();
 
+        engine Monsterengine = new engine();
+
         MapInAMap mapInAMap;
-        public VisualMap(MapEngine engine)
+        public VisualMap(MapEngine mapeEngine)
         {
-            this.mapInAMap = new MapInAMap(engine);
+            this.mapInAMap = new MapInAMap(mapeEngine);
 
         }
         private int xx = 5;
         private int yy = 25;
+
+        private int PlayerMonsterLocation = 4;
 
         private int hablyICanFly = 0;
 
@@ -78,6 +83,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
             while (moving)
             {
+
                 MapLoader();
                 SpawningDaPlayer();
                 userInput = Console.ReadLine();
@@ -95,6 +101,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     else
                     {
                         y -= 5;
+                        PlayerMonsterLocation -= 3;
+                        CheckingDaMovment(PlayerMonsterLocation);
                         SpawningDaPlayer();
                     }
                 }
@@ -109,6 +117,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     else
                     {
                         y += 5;
+                        PlayerMonsterLocation += 3;
+                        CheckingDaMovment(PlayerMonsterLocation);
                         SpawningDaPlayer();
                     }
                 }
@@ -123,6 +133,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     else
                     {
                         x -= 10;
+                        PlayerMonsterLocation -= 1;
+                        CheckingDaMovment(PlayerMonsterLocation);
                         SpawningDaPlayer();
                     }
                 }
@@ -137,6 +149,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     else
                     {
                         x += 10;
+                        PlayerMonsterLocation += 1;
+                        CheckingDaMovment(PlayerMonsterLocation);
                         SpawningDaPlayer();
                     }
                 }
@@ -164,11 +178,11 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
             for (int jj = 0; jj < 3; jj++)
             {
-                int yY = 5 * jj; // IF yY = 0 = first row, if yY = 5 = second row, if yY = 10 = third row
+                int yY = 5 * jj; // IF yY = 0 = first row, if yY = 5 = second row, if yY = 10 = third row ... jj * 3
                 int j = 0;
                 for (j = 0; j < 3; j++)
                 {
-                    int xX = 10 * j; // now xX = 0 = first column, IF xX = 10 = second column, if xX = 20 = third column
+                    int xX = 10 * j; // now xX = 0 = first column, IF xX = 10 = second column, if xX = 20 = third column ... just use j here
 
                     int xU = daMapPositionX + xX;
                     int yU = daMapPositionY + yY;
@@ -327,6 +341,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             y = 7 + daMapPositionY;
             offSet = true;
             starterPlayer = false;
+            PlayerMonsterLocation = 4;
             currentItems.Clear();
         }
 
@@ -460,7 +475,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
             else
             {
-                if (currentItems[j + i] == "Item")
+                if (currentItems[j + jj * 3] == "Item")
                 {
                     UpAndDownKiller(xU, yU, i);
                     Console.SetCursorPosition(xU + 3, yU + i);
@@ -470,7 +485,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                         Console.ResetColor();
                     }
                 }
-                else if (currentItems[j + i] == "Zombie")
+                else if (currentItems[j + jj * 3] == "Zombie")
                 {
                     Console.SetCursorPosition(xU + 4, yU + i - 1);
                     {
@@ -487,7 +502,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                         Console.ResetColor();
                     }
                 }
-                else if (currentItems[j + i] == "Boss")
+                else if (currentItems[j + jj * 3] == "Boss")
                 {
                     Console.SetCursorPosition(xU + 3, yU + i - 1);
                     {
@@ -504,7 +519,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                         Console.ResetColor();
                     }
                 }
-                else if (currentItems[j + i] == "Orc")
+                else if (currentItems[j + jj * 3] == "Orc")
                 {
                     Console.SetCursorPosition(xU + 3, yU + i - 1);
                     {
@@ -521,7 +536,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                         Console.ResetColor();
                     }
                 }
-                else if (currentItems[j + i] == "StoneGolem")
+                else if (currentItems[j + jj * 3] == "StoneGolem")
                 {
                     Console.SetCursorPosition(xU + 3, yU + i - 1);
                     {
@@ -562,6 +577,29 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 Console.WriteLine(@"   ");
             }
         }
+        private void CheckingDaMovment(int PML)
+        {
+            if (currentItems.Count == 0)
+            {
+            }
+            else if (currentItems[PML] == "x")
+            {
+            }
+            else if (PML == 4)
+            {
+                Console.WriteLine("x");
+            }
+            else
+            {
+                string daMonster = currentItems[PML];
+                Monsterengine.GettingDaMonster(daMonster);
+                Monsterengine.StartFight();
+                currentItems[PML] = "x";
+                mapInAMap.DaMapSaver(PML);
+                
+            }
+        }
+        
     }
 }
 

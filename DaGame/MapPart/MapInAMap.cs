@@ -58,8 +58,8 @@ namespace DaGame.MapPart
             Console.WriteLine(y);
             Console.WriteLine(x);
             foreach (var item in mapEngine.DaMap[y][x])
-            { 
-              daRoom.Add(item);
+            {
+                    daRoom.Add(item);
             }
             if (y.ToString() == bossLocation[0] && x.ToString() == bossLocation[1])
             {
@@ -135,6 +135,10 @@ namespace DaGame.MapPart
                 bossLocation.Add(item);
             }
             
+        }
+        public void DaMapSaver(int PML)
+        {
+            mapEngine.DaMapSaver(x, y, PML);
         }
     }
 }
