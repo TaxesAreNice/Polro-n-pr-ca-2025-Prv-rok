@@ -1,4 +1,5 @@
-﻿using Polročná_práca_2025_Prvý_rok.MapPart;
+﻿using Polročná_práca_2025_Prvý_rok.FightingPart;
+using Polročná_práca_2025_Prvý_rok.MapPart;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,8 @@ namespace DaGame.MapPart
             this.mapEngine = mapEngine;
            
         }
-        private int x = 0;
-        private int y = 0;
+        public int x = 0;
+        public int y = 0;
 
         List<string> currentItems = new List<string>();
         List<string> bossLocation = new List<string>();
@@ -29,6 +30,21 @@ namespace DaGame.MapPart
             Console.WriteLine(direcion);
             return RoomChanger(direcion);
 
+        }
+        public void GettingDaUplodedXandY()
+        {
+            if (mapEngine.firstlyRuniny == false)
+            {
+                
+            }
+            else
+            {
+                Console.WriteLine("Was?");
+            }
+        }
+        public void imLosingIt()
+        {
+            mapEngine.UpdatingDaXandYForDaRooms();
         }
 
         private List<string> RoomChanger(string direcion)
@@ -55,12 +71,15 @@ namespace DaGame.MapPart
                 CheckingDaWalls(direcion);
                 x++;
             }
+
             Console.WriteLine(y);
             Console.WriteLine(x);
+
             foreach (var item in mapEngine.DaMap[y][x])
             {
                     daRoom.Add(item);
             }
+
             if (y.ToString() == bossLocation[0] && x.ToString() == bossLocation[1])
             {
                 daRoom.Add("Boss");
@@ -82,10 +101,21 @@ namespace DaGame.MapPart
                     daRoom.Add("right");
                 }
 
+                daRoom.Add(x.ToString());
+                daRoom.Add(y.ToString());
+
                 Console.WriteLine("You can feel the boss is in one of these walls"); ///////////////////// hier, buddy bud!
             }
+            else
+            {
+                daRoom.Add("idk, filler");
+                daRoom.Add(x.ToString());
+                daRoom.Add(y.ToString());
+            }
 
-            return daRoom;
+            
+
+                return daRoom;
             // i = the y's
             // j = the x's
             // k = the items

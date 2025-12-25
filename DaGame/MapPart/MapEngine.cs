@@ -24,6 +24,8 @@ namespace DaGame.MapPart
 
         private int neun = 9;
 
+        public bool firstlyRuniny = true;
+
         string daFileSettingsPath = @"";
 
         private string daFilePath = @"";
@@ -63,6 +65,7 @@ namespace DaGame.MapPart
             {
                 File.ReadAllText(dafileMapPath);
                 FirstRun = false;
+                firstlyRuniny = false;
                 Console.WriteLine("ah shit, here we go again");
             }
             catch (Exception)
@@ -118,6 +121,10 @@ namespace DaGame.MapPart
                 i++;
             }
 
+        }
+        public void UpdatingDaXandYForDaRooms()
+        {
+            // make sure it reads every line and then it puts it into a list and then puts the first 3 lines back and then swaps the 4th and 5th one and then keeps the same 6th one to the 9th one, cause 7 and 8 are the player position in da box
         }
         private void GrabDificulty()
         {
@@ -293,21 +300,21 @@ namespace DaGame.MapPart
                         }
             */
         }
-        
+
 
         public void RandomItemGenerator()
         {
-                daCurrentMonster = Stuff[random.Next(0, Stuff.Count)].ToString();
+            daCurrentMonster = Stuff[random.Next(0, Stuff.Count)].ToString();
         }
         public void SendingTheBossPosition(int y, int x)
         {
             Console.WriteLine($"Boss at: y:{y},x:{x}");
         }
-        
+
 
         public List<string> DaBossPlacer()
         {
-        List<string> fan = new List<string>();
+            List<string> fan = new List<string>();
 
             daBossY = random.Next(0, daMapSizeY - 1);
 
@@ -327,7 +334,7 @@ namespace DaGame.MapPart
                 {
                     daBossX = daMapSizeX - 1;
                 }
-            } 
+            }
 
             fan.Add(daBossY.ToString());
             fan.Add(daBossX.ToString());
@@ -364,7 +371,33 @@ namespace DaGame.MapPart
         }
         private void DaMapFileSaver()
         {
-            
+            //1. done
+            //2. figure out how to change da player position
+            //3. figure out how to change da player position in the box
+
+            // dafileMapPath
+            // daMapSizeX
+
+            DaMapUpdater();
+
+        }
+        private void DaMapUpdater()
+        {
+            string daMapText = "";
+            File.WriteAllText(dafileMapPath, "");
+
+            for (int yY = 0; yY < daMapSizeY; yY++)
+            {
+                for (int xX = 0; xX < daMapSizeX; xX++)
+                {
+                    foreach (string item in DaMap[yY][xX])
+                    {
+                        daMapText = item;
+                        File.AppendAllText(dafileMapPath, daMapText + "\n");
+                        daMapText = "";
+                    }
+                }
+            }
         }
     }
 }

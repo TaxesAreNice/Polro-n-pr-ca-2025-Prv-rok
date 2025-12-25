@@ -64,10 +64,27 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         
         public void DaVisualMap()
         {
-            mapInAMap.BossSpawning();
+
+            CheckingForTheFirstTime();
+
             settingUpDaPlayer();
             DaMapThing();
         }
+        private void CheckingForTheFirstTime()
+        {
+            mapInAMap.GettingDaUplodedXandY();
+
+            if (mapInAMap.x != 0 && mapInAMap.y != 0)
+            {
+                
+                Converting2List("right");
+            }
+            else
+            {
+                mapInAMap.BossSpawning();
+            }
+        }
+        
 
         private void settingUpDaPlayer()
         {
@@ -266,7 +283,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 {
                     SettingThePlayerRoomValue();
                     direction = "left";
-
+                    UpdatingDaXandYOfDaRoom();
                     Converting2List(direction);
                     Console.WriteLine("left");
                 }
@@ -283,7 +300,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     SettingThePlayerRoomValue();
                     direction = "right";
                     Converting2List(direction);
-
+                    UpdatingDaXandYOfDaRoom();
                     Console.WriteLine("right");
                 }
             }
@@ -299,6 +316,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     SettingThePlayerRoomValue();
                     direction = "up";
                     Converting2List(direction);
+                    UpdatingDaXandYOfDaRoom();
                     Console.WriteLine("up");
                 }
             }
@@ -314,6 +332,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     SettingThePlayerRoomValue();
                     direction = "down";
                     Converting2List(direction);
+                    UpdatingDaXandYOfDaRoom();
 
                     Console.WriteLine("down");
                 }
@@ -323,7 +342,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 CheckingEadges();
             }
         }
-      
+        private void UpdatingDaXandYOfDaRoom()
+        {
+            mapInAMap.imLosingIt();
+        }
 
         private List<string> Converting2List(string direction)
         {
@@ -585,6 +607,12 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             else if (currentItems[PML] == "x")
             {
             }
+            else if (currentItems[PML] == "Item")
+            {
+                Console.WriteLine("You found an item!");
+                currentItems[PML] = "x";
+                mapInAMap.DaMapSaver(PML);
+            }
             else if (PML == 4)
             {
                 Console.WriteLine("x");
@@ -596,7 +624,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 Monsterengine.StartFight();
                 currentItems[PML] = "x";
                 mapInAMap.DaMapSaver(PML);
-                
+
             }
         }
         
