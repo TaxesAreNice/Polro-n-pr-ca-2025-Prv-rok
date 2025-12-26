@@ -33,18 +33,28 @@ namespace DaGame.MapPart
         }
         public void GettingDaUplodedXandY()
         {
+            List<int> DaThings = new List<int>();
+
             if (mapEngine.firstlyRuniny == false)
             {
-                
+               var a = mapEngine.GettingDaXandYForDaRooms();
+               
+                foreach (var item in a) // the first one is y and the second one is x
+                {
+                    DaThings.Add(item);
+                }
+                x = DaThings[0];
+                y = DaThings[1];
             }
             else
             {
                 Console.WriteLine("Was?");
+                
             }
         }
         public void imLosingIt()
         {
-            mapEngine.UpdatingDaXandYForDaRooms();
+            mapEngine.UpdatingDaXandYForDaRooms(x, y);  
         }
 
         private List<string> RoomChanger(string direcion)

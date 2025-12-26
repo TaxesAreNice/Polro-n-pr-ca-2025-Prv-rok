@@ -122,9 +122,41 @@ namespace DaGame.MapPart
             }
 
         }
-        public void UpdatingDaXandYForDaRooms()
+        public void UpdatingDaXandYForDaRooms(int xF, int yF)
         {
+            List<string> allDaSettingsItems = new List<string>();
+            string daWholeSettingsText = "";
+
             // make sure it reads every line and then it puts it into a list and then puts the first 3 lines back and then swaps the 4th and 5th one and then keeps the same 6th one to the 9th one, cause 7 and 8 are the player position in da box
+            foreach (string item in File.ReadAllLines(daFileSettingsPath))
+            {
+                allDaSettingsItems.Add(item);
+            }
+            allDaSettingsItems[3] = xF.ToString();
+            allDaSettingsItems[4] = yF.ToString();
+
+            foreach (string item in allDaSettingsItems)
+            {
+                daWholeSettingsText += item + "\n";
+            }
+
+            File.WriteAllText(daFileSettingsPath, daWholeSettingsText);
+        }
+        public List<int> GettingDaXandYForDaRooms()
+        {
+            List<string> allDaSettingsItems = new List<string>();
+            List<int> daWholeSettingsText = new List<int>();
+
+            // make sure it reads every line and then it puts it into a list and then puts the first 3 lines back and then swaps the 4th and 5th one and then keeps the same 6th one to the 9th one, cause 7 and 8 are the player position in da box
+            foreach (string item in File.ReadAllLines(daFileSettingsPath))
+            {
+                allDaSettingsItems.Add(item);
+            }
+
+            daWholeSettingsText.Add(Convert.ToInt32(allDaSettingsItems[3]));
+            daWholeSettingsText.Add(Convert.ToInt32(allDaSettingsItems[4]));
+
+            return daWholeSettingsText;
         }
         private void GrabDificulty()
         {
@@ -227,7 +259,11 @@ namespace DaGame.MapPart
         private void LoadingDaMaps()
         {
             string daMapText = "";
-            daGameSettings += daMapSizeX.ToString() + "\n" + daMapSizeY.ToString() + "\n";
+            daGameSettings += daMapSizeX.ToString() + "\n" + daMapSizeY.ToString() + "\n\n";
+
+            daGameSettings += 0.ToString() + "\n" + 0.ToString() + "\n\n"; // da position of da player in da Map
+
+            daGameSettings += 4.ToString() + "\n\n"; // da position of da player in da box, thats da middle btw
 
             File.WriteAllText(dafileMapPath, daMapText);
             File.WriteAllText(daFileSettingsPath, daGameSettings);

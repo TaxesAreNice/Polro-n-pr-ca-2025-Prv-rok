@@ -73,11 +73,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private void CheckingForTheFirstTime()
         {
             mapInAMap.GettingDaUplodedXandY();
+            
 
             if (mapInAMap.x != 0 && mapInAMap.y != 0)
             {
-                
+                mapInAMap.x -= 1;
+                mapInAMap.BossSpawning(); // we need to remember da boss location too
                 Converting2List("right");
+                starterPlayer = false;
             }
             else
             {
@@ -366,7 +369,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             PlayerMonsterLocation = 4;
             currentItems.Clear();
         }
-
+        
         private void SpawningDaPlayer()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -623,7 +626,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 Monsterengine.GettingDaMonster(daMonster);
                 Monsterengine.StartFight();
                 currentItems[PML] = "x";
-                mapInAMap.DaMapSaver(PML);
+                mapInAMap.DaMapSaver(PML); 
 
             }
         }
