@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DaGame.MapPart
@@ -40,6 +41,8 @@ namespace DaGame.MapPart
 
         private List<string> Stuff = new List<string>() { "Item", "x", "Zombie", "Orc", "StoneGolem" };
 
+         
+
         public int daMapSizeX = 0;
         public int daMapSizeY = 0;
 
@@ -47,12 +50,14 @@ namespace DaGame.MapPart
         public void Run()
         {
             bool FirstRun = true;
+
             DaPathChoser();
             FirstRun = DaFileChecker(FirstRun);
 
             if (FirstRun)
             {
                 GrabDificulty();
+
             }
             else
             {
@@ -178,7 +183,7 @@ namespace DaGame.MapPart
                 switch (userInput)
                 {
                     case "1":
-                        daMapSizeX = 15;
+                        daMapSizeX = 15 ;
                         daMapSizeY = 15;
                         dificultyChosing = false;
                         break;
@@ -346,7 +351,53 @@ namespace DaGame.MapPart
         {
             Console.WriteLine($"Boss at: y:{y},x:{x}");
         }
+        private int ff = 0;
+        private List<string> DaBossSaver = new List<string>();
+        public void SavingDaBossLocation(string item, int number)
+        {
+            ff += number;
+            if (ff == 3)
+            {
+                DaBossSaver.Add(item);
+                SavingDaBoss();
+            }
+            else
+            {
+                DaBossSaver.Add(item);
+            }
+        }
+        private void SavingDaBoss()
+        {
+            string text = "";
 
+            foreach (string item in DaBossSaver)
+            {
+                text += item + "\n";
+            }
+            text += "\n";
+            File.AppendAllText(daFileSettingsPath, text);
+        }
+        public List<string> BossReader()
+        {
+            List<string> fan = new List<string>();
+            int daStarterPosition = 8;
+            int currentPosition = 0;
+            int daEndPosition = 10;
+
+            foreach (string item in File.ReadAllLines(daFileSettingsPath))
+            {
+                if (currentPosition >= daStarterPosition || currentPosition != daEndPosition)
+                {
+                    fan.Add(item.ToString());
+                    currentPosition++;
+                }
+                else
+                {
+                    currentPosition++;
+                }
+            }
+            return fan;
+        }
 
         public List<string> DaBossPlacer()
         {

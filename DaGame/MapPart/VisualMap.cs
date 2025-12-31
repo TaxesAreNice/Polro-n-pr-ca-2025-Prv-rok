@@ -75,16 +75,21 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             mapInAMap.GettingDaUplodedXandY();
             
 
+
+
             if (mapInAMap.x != 0 && mapInAMap.y != 0)
             {
                 mapInAMap.x -= 1;
-                mapInAMap.BossSpawning(); // we need to remember da boss location too
+                mapInAMap.BossReader();
+                mapInAMap.BossSpawning(starterPlayer);
                 Converting2List("right");
                 starterPlayer = false;
             }
             else
             {
-                mapInAMap.BossSpawning();
+                mapInAMap.BossReader();
+                mapInAMap.BossSpawning(starterPlayer);
+                starterPlayer = false;
             }
         }
         

@@ -23,6 +23,7 @@ namespace DaGame.MapPart
 
         List<string> currentItems = new List<string>();
         List<string> bossLocation = new List<string>();
+        List<string> boosBackUp = new List<string>();
 
 
         public List<string>  CheckingTheRoomMovment(string direcion)
@@ -49,7 +50,7 @@ namespace DaGame.MapPart
             else
             {
                 Console.WriteLine("Was?");
-                
+                BossSpawning(false);
             }
         }
         public void imLosingIt()
@@ -167,18 +168,38 @@ namespace DaGame.MapPart
             Console.WriteLine(":x");
                 
         }
-        public void BossSpawning()
+        
+        public void BossSpawning(bool starterPlayer)
         {
-
-            foreach (var item in mapEngine.DaBossPlacer())
+            if (starterPlayer)
             {
-                bossLocation.Add(item);
+                foreach (var item in mapEngine.BossReader())
+                {
+                    bossLocation.Add(item);
+                    item.ToString();
+                    mapEngine.SavingDaBossLocation(item, 1);
+                }
             }
+            else
+            {
+                foreach (var item in mapEngine.DaBossPlacer())
+                {
+                    bossLocation.Add(item);
+                    item.ToString();
+                    mapEngine.SavingDaBossLocation(item, 1);
+                }
+            }
+                
             
         }
         public void DaMapSaver(int PML)
         {
             mapEngine.DaMapSaver(x, y, PML);
+        }
+        
+        public void BossReader()
+        {
+            mapEngine.BossReader();
         }
     }
 }
