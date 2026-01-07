@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Sources;
@@ -10,6 +11,7 @@ namespace DaGame.MapPart
 {
     internal class MapEngine
     {
+        private const int V = 12;
         Random random = new Random();
 
         public List<List<List<string>>> DaMap = new List<List<List<string>>>();
@@ -227,10 +229,25 @@ namespace DaGame.MapPart
                     {
                         Console.Clear();
                         DaBossPlacer();
+                        
                         LoadingDaMaps();
+                        
                     }
                 }
             }
+        }
+        public void SettingDaPlayerBoxPosition()
+        {
+            //List<string> ov = new List<string>();
+
+            File.AppendAllText(daFileSettingsPath, "0\n");
+            /*
+foreach (var item in File.ReadAllLines(daFileSettingsPath))
+{
+    ov.Add(item);
+}
+Console.WriteLine(ov[0]);
+*/
         }
         private void RandomDificulty()
         {
@@ -425,7 +442,7 @@ namespace DaGame.MapPart
 
             fan.Add(daBossY.ToString());
             fan.Add(daBossX.ToString());
-
+            /*
             if (daBossY == 0)
             {
                 fan.Add("down");
@@ -443,7 +460,51 @@ namespace DaGame.MapPart
             {
                 fan.Add("left");
             }
-
+            */
+            if (daBossY == daMapSizeY - 1 && daBossX == daMapSizeX - 1)
+            {
+                fan.Add("up");
+                fan.Add("left");
+            }
+            else if (daBossY == 0 && daBossX == 0)
+            {
+                fan.Add("down");
+                fan.Add("right");
+            }
+            else if (daBossY == daMapSizeY - 1 && daBossX == 0)
+            {
+                fan.Add("up");
+                fan.Add("right");
+            }
+            else if (daBossY == 0 && daBossX == daMapSizeX - 1)
+            {
+                fan.Add("down");
+                fan.Add("up");
+            }
+            else
+            {
+                if (daBossX == 0)
+                {
+                    fan.Add("right");
+                }
+                else if (daBossX == daMapSizeX - 1)
+                {
+                    fan.Add("left");
+                }
+                else if (daBossY == 0)
+                {
+                    fan.Add("down");
+                }
+                else if (daBossY == daMapSizeY - 1)
+                {
+                    fan.Add("up");
+                }
+                else
+                {
+                    Console.WriteLine("Cant get da direcion");
+                }
+            }
+        // the: up, down, left and right things are inverted... so yeah, just saying
 
             return fan;
         }
@@ -453,20 +514,49 @@ namespace DaGame.MapPart
             int y = yY;
 
             DaMap[y][x][PML] = "x";
-            DaMapFileSaver();
+            DaMapFileSaver(PML);
 
         }
-        private void DaMapFileSaver()
+        private void DaMapFileSaver(int PML)
         {
             //1. done
-            //2. figure out how to change da player position
-            //3. figure out how to change da player position in the box
+            //2. done
+            //3. figure out how to save da player position in the box
 
             // dafileMapPath
             // daMapSizeX
-
+            DaMapBoxUpdater(PML);
             DaMapUpdater();
 
+        }
+        public  void gettingdaBoxPlayerPosition(int PlayerMonsterLocation)
+        {
+            DaMapBoxUpdater(PlayerMonsterLocation);
+        }
+        private void DaMapBoxUpdater(int PML)
+        {
+            List<string> f  = new List<string>();
+            List<string> newf = new List<string>();
+
+            int i = 0;
+
+            foreach (string list in File.ReadAllLines(daFileSettingsPath))
+            {
+                f.Add(list);
+            }
+
+            f[12] = PML.ToString();
+            foreach (string list in f)
+            {
+                newf.Add(list + "\n");
+            }
+
+                File.WriteAllText(daFileSettingsPath, string.Empty);
+            foreach (string list in newf)
+            {
+                File.AppendAllText(daFileSettingsPath, newf[i]);
+                i++;
+            }
         }
         private void DaMapUpdater()
         {

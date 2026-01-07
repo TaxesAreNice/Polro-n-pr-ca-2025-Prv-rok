@@ -77,7 +77,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
 
 
-            if (mapInAMap.x != 0 && mapInAMap.y != 0)
+            if (//mapInAMap.x != 0 && mapInAMap.y != 0
+                starterPlayer)
             {
                 mapInAMap.x -= 1;
                 mapInAMap.BossReader();
@@ -87,9 +88,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
             else
             {
+                //// it goes here
                 mapInAMap.BossReader();
                 mapInAMap.BossSpawning(starterPlayer);
-                starterPlayer = false;
+                starterPlayer = true;
             }
         }
         
@@ -98,6 +100,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         {
             x += daMapPositionX;
             y += daMapPositionY;
+        }
+        private void gettingDaPlayerBoxPosition()
+        {
+            // here we'll do the updating da playerBoxLocation thing
         }
         private void DaMapThing()
         {
@@ -111,6 +117,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
                 MapLoader();
                 SpawningDaPlayer();
+
                 userInput = Console.ReadLine();
                 Console.Clear();
                 MapLoader();
@@ -188,6 +195,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     SpawningDaPlayer();
                 }
 
+                UpdatingDaPlayerBoxLocation(PlayerMonsterLocation);
+
                 Console.SetCursorPosition(xx, yy);
                 {
                     Console.WriteLine($"x{x},y{y}, ? = settings");
@@ -196,6 +205,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 { Console.WriteLine(item); }
             }
             Console.Clear();
+        }
+        private void UpdatingDaPlayerBoxLocation(int PlayerMonsterLocation)
+        {
+            mapInAMap.GettingDaPlayerBoxPossition(PlayerMonsterLocation);
         }
         private void MapLoader()
         {

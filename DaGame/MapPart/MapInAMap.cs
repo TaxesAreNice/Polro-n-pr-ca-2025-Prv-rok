@@ -51,6 +51,7 @@ namespace DaGame.MapPart
             {
                 Console.WriteLine("Was?");
                 BossSpawning(false);
+
             }
         }
         public void imLosingIt()
@@ -168,6 +169,10 @@ namespace DaGame.MapPart
             Console.WriteLine(":x");
                 
         }
+        public void GettingDaPlayerBoxPossition(int PlayerMonsterLocation)
+        {
+            mapEngine.gettingdaBoxPlayerPosition(PlayerMonsterLocation);
+        }
         
         public void BossSpawning(bool starterPlayer)
         {
@@ -188,6 +193,7 @@ namespace DaGame.MapPart
                     item.ToString();
                     mapEngine.SavingDaBossLocation(item, 1);
                 }
+                mapEngine.SettingDaPlayerBoxPosition();
             }
                 
             
