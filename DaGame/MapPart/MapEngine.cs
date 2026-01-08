@@ -9,6 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DaGame.MapPart
 {
+    
     internal class MapEngine
     {
         private const int V = 12;
@@ -32,7 +33,7 @@ namespace DaGame.MapPart
         string daFileSettingsPath = @"";
 
         private string daFilePath = @"";
-
+        
         private string dafileMapPath = @"";
 
         public int daBossY = 0;
@@ -43,12 +44,17 @@ namespace DaGame.MapPart
 
         private List<string> Stuff = new List<string>() { "Item", "x", "Zombie", "Orc", "StoneGolem" };
 
-         
+        public int PlayerBoxPosition = 4;
 
         public int daMapSizeX = 0;
         public int daMapSizeY = 0;
 
         private string daCurrentMonster = "";
+
+        public void SettingThePlayerBoxLocation()
+        {
+
+        }
         public void Run()
         {
             bool FirstRun = true;
@@ -83,6 +89,7 @@ namespace DaGame.MapPart
             }
             return FirstRun;
         }
+        
         private void DaPathChoser()
         {
             Console.WriteLine("Chose a file path(even if you alredy did this)\n   Just create a folder somewhere and grab the path from there");
@@ -105,6 +112,7 @@ namespace DaGame.MapPart
             }
             daMapSizeX = int.Parse(daBackUpSettings[0]);
             daMapSizeY = int.Parse(daBackUpSettings[1]);
+            PlayerBoxPosition = int.Parse(daBackUpSettings[12]);
 
             int i = 0;
             int kk = 0;
@@ -127,7 +135,7 @@ namespace DaGame.MapPart
                 }
                 i++;
             }
-
+            
         }
         public void UpdatingDaXandYForDaRooms(int xF, int yF)
         {
@@ -162,6 +170,7 @@ namespace DaGame.MapPart
 
             daWholeSettingsText.Add(Convert.ToInt32(allDaSettingsItems[3]));
             daWholeSettingsText.Add(Convert.ToInt32(allDaSettingsItems[4]));
+            daWholeSettingsText.Add(PlayerBoxPosition);
 
             return daWholeSettingsText;
         }
@@ -240,7 +249,7 @@ namespace DaGame.MapPart
         {
             //List<string> ov = new List<string>();
 
-            File.AppendAllText(daFileSettingsPath, "0\n");
+            File.AppendAllText(daFileSettingsPath, "4\n");
             /*
 foreach (var item in File.ReadAllLines(daFileSettingsPath))
 {
@@ -521,7 +530,7 @@ Console.WriteLine(ov[0]);
         {
             //1. done
             //2. done
-            //3. figure out how to save da player position in the box
+            //3. done
 
             // dafileMapPath
             // daMapSizeX
@@ -546,11 +555,23 @@ Console.WriteLine(ov[0]);
             }
 
             f[12] = PML.ToString();
-            foreach (string list in f)
-            {
-                newf.Add(list + "\n");
-            }
 
+            if (f.Count > 14)
+            {
+                while (i < 13)
+                {
+                    newf.Add(f[i] + "\n");
+                    i++;
+                }
+            }
+            else
+           {
+                foreach (string list in f)
+                {
+                    newf.Add(list + "\n");
+                }
+            }
+            i = 0;
                 File.WriteAllText(daFileSettingsPath, string.Empty);
             foreach (string list in newf)
             {

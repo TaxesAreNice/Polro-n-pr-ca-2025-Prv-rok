@@ -21,11 +21,16 @@ namespace DaGame.MapPart
         public int x = 0;
         public int y = 0;
 
+        public int PlayerBoxPosition = 4;
+
         List<string> currentItems = new List<string>();
         List<string> bossLocation = new List<string>();
         List<string> boosBackUp = new List<string>();
 
+        public void SettingThePlayerBoxLocation(int playerBoxPosition)
+        {
 
+        }
         public List<string>  CheckingTheRoomMovment(string direcion)
         {
             Console.WriteLine(direcion);
@@ -46,6 +51,8 @@ namespace DaGame.MapPart
                 }
                 x = DaThings[0];
                 y = DaThings[1];
+                PlayerBoxPosition = DaThings[2];
+                mapEngine.SettingThePlayerBoxLocation();
             }
             else
             {

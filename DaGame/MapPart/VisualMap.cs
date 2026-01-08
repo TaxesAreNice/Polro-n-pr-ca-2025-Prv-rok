@@ -73,14 +73,16 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private void CheckingForTheFirstTime()
         {
             mapInAMap.GettingDaUplodedXandY();
+
+
             
 
-
-
-            if (//mapInAMap.x != 0 && mapInAMap.y != 0
-                starterPlayer)
+            if (starterPlayer) //mapInAMap.x != 0 && mapInAMap.y != 0
             {
                 mapInAMap.x -= 1;
+                PlayerMonsterLocation = mapInAMap.PlayerBoxPosition;
+                SettingDaXandYToDaPlayerBoxPosition();
+                
                 mapInAMap.BossReader();
                 mapInAMap.BossSpawning(starterPlayer);
                 Converting2List("right");
@@ -95,7 +97,43 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
         }
         
+        private void SettingDaXandYToDaPlayerBoxPosition()
+        {
+            int o = 0;
+            int Lx = 0;
 
+        if (PlayerMonsterLocation >= 3 && PlayerMonsterLocation <= 5) // this checks if y's in the middle layer
+            {
+                y = 7;
+                o = 3;
+            }
+        else if (PlayerMonsterLocation >= 6 && PlayerMonsterLocation <= 8) // here in the 3th one
+            {
+                y = 12;
+                o = 6;
+            }
+        else // and here if it's in the first one
+            {
+                y = 2;
+                o = 0;
+            }
+
+            Lx = PlayerMonsterLocation - o; // this gets the x position
+        
+            if (Lx == 0)
+            {
+                x = 4;
+            }
+            else if (Lx == 1)
+            {
+                x = 14;
+            }
+            else if (Lx == 2)
+            {
+                x = 24;
+            }
+
+        }
         private void settingUpDaPlayer()
         {
             x += daMapPositionX;
