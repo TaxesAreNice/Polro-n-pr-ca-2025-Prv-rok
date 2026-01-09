@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using DaGame.FightingPart;
@@ -21,6 +22,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             this.mapInAMap = new MapInAMap(mapeEngine);
 
         }
+        
+        private int currentEXP = 0;
+
+        private int CurrentLevel = 0;
+        private int currentLevelbarier = 1;
+
+        public List<string> currentInventory = new List<string>();
+
         private int xx = 5;
         private int yy = 25;
 
@@ -679,14 +688,48 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             else
             {
                 string daMonster = currentItems[PML];
-                Monsterengine.GettingDaMonster(daMonster);
+                Monsterengine.GettingDaMonster(daMonster, currentInventory);
                 Monsterengine.StartFight();
+                currentInventory = Monsterengine.currentInventory;
+                currentEXP = Monsterengine.expReturner;
+
+
+                foreach (var item in currentInventory)
+                {
+                    //Console.WriteLine(item);
+                }
+                SettingDaPlayerLevel();
+
                 currentItems[PML] = "x";
                 mapInAMap.DaMapSaver(PML); 
 
             }
         }
-        
+        private void SettingDaPlayerLevel()
+        {
+            int leftOverExp = 0;
+
+            if (currentEXP >= 10 * currentLevelbarier)
+            {
+                CurrentLevel += 1;
+                if (currentEXP > 10 * currentLevelbarier)
+                {
+                    leftOverExp = currentEXP - 10 * currentLevelbarier; 
+                    currentEXP = leftOverExp;
+                    currentLevelbarier += 1;
+                    SettingDaPlayerLevel(); // just in case if you level up again, so it can check again
+                }
+                else
+                {
+                    currentEXP = 0;
+                    currentLevelbarier += 1;
+                }
+                
+                Console.WriteLine(CurrentLevel);
+                Console.WriteLine(leftOverExp);
+                string? faf = Console.ReadLine();
+            }
+        }
     }
 }
 

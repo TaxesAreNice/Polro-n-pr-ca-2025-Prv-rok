@@ -36,6 +36,10 @@ namespace DaGame.MapPart
         
         private string dafileMapPath = @"";
 
+        private string daFileInventoryPath = @"";
+
+        private string daFileEXPPath = @"";
+
         public int daBossY = 0;
         public int daBossX = 0;
 
@@ -44,7 +48,13 @@ namespace DaGame.MapPart
 
         private List<string> Stuff = new List<string>() { "Item", "x", "Zombie", "Orc", "StoneGolem" };
 
+        private List<string> PlayerInventory = new List<string>();
+
         public int PlayerBoxPosition = 4;
+
+        public int PlayerEXP = 0;
+        public int PlayerLevel = 0;
+        private List<string> InventoryBaby = new List<string>();
 
         public int daMapSizeX = 0;
         public int daMapSizeY = 0;
@@ -96,6 +106,8 @@ namespace DaGame.MapPart
             daFilePath = Console.ReadLine();
             dafileMapPath = daFilePath + "/DaMap.txt";
             daFileSettingsPath = daFilePath + "/DaGameSettings.txt";
+            daFileInventoryPath = daFilePath + "/DaInventory.txt";
+            daFileEXPPath = daFilePath + "/DaExp.txt";
 
             Console.Clear();
 
@@ -113,6 +125,16 @@ namespace DaGame.MapPart
             daMapSizeX = int.Parse(daBackUpSettings[0]);
             daMapSizeY = int.Parse(daBackUpSettings[1]);
             PlayerBoxPosition = int.Parse(daBackUpSettings[12]);
+            foreach (string item in File.ReadAllLines(daFileInventoryPath))
+            {
+                PlayerInventory.Add(item);
+            }
+            foreach(string item in File.ReadAllLines(daFileEXPPath))
+            {
+                InventoryBaby.Add(item);
+            }
+            InventoryBaby[0] = PlayerEXP.ToString();
+            InventoryBaby[1] = PlayerLevel.ToString();
 
             int i = 0;
             int kk = 0;
@@ -298,6 +320,10 @@ Console.WriteLine(ov[0]);
 
             File.WriteAllText(dafileMapPath, daMapText);
             File.WriteAllText(daFileSettingsPath, daGameSettings);
+            File.WriteAllText(daFileInventoryPath, "");
+            File.WriteAllText(daFileEXPPath, "0\n0");
+            
+
 
             bool containsHim = false;
             bool notDoneYet = true;
