@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Sources;
+using Polročná_práca_2025_Prvý_rok.FightingPart;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DaGame.MapPart
@@ -12,6 +13,9 @@ namespace DaGame.MapPart
     
     internal class MapEngine
     {
+        public int PlayerHP = 100;
+        public int PlayerDamage = 10;
+
         private const int V = 12;
         Random random = new Random();
 
@@ -25,6 +29,8 @@ namespace DaGame.MapPart
         private int bosininy = 10;
 
         private string daGameSettings = "";
+
+        public List<string> PlayerPlayerInventory = new List<string>();
 
         private int neun = 9;
 
@@ -40,11 +46,16 @@ namespace DaGame.MapPart
 
         private string daFileEXPPath = @"";
 
+        private string daFilePlayerStatsPath = @"";
+
         public int daBossY = 0;
         public int daBossX = 0;
 
         private int bosinichancinyY = 0;
         private int bosinichancinyX = 0;
+
+        public int PlayerExp = 0;
+        public int PlayerLEVEL = 0;
 
         private List<string> Stuff = new List<string>() { "Item", "x", "Zombie", "Orc", "StoneGolem" };
 
@@ -108,6 +119,7 @@ namespace DaGame.MapPart
             daFileSettingsPath = daFilePath + "/DaGameSettings.txt";
             daFileInventoryPath = daFilePath + "/DaInventory.txt";
             daFileEXPPath = daFilePath + "/DaExp.txt";
+            daFilePlayerStatsPath = daFilePath + "/DaPlayerStats.txt";
 
             Console.Clear();
 
@@ -322,7 +334,7 @@ Console.WriteLine(ov[0]);
             File.WriteAllText(daFileSettingsPath, daGameSettings);
             File.WriteAllText(daFileInventoryPath, "");
             File.WriteAllText(daFileEXPPath, "0\n0");
-            
+            File.WriteAllText(daFilePlayerStatsPath, "100\n");
 
 
             bool containsHim = false;
@@ -622,6 +634,55 @@ Console.WriteLine(ov[0]);
                     }
                 }
             }
+        }
+        public void DaExpAndLevelSaver(int exp, int level)
+        {
+            List<string> f = new List<string>();
+            f.Add(exp.ToString());
+            f.Add(level.ToString());
+            File.WriteAllText(daFileEXPPath, "");
+            foreach (string item in f)
+            {
+                File.AppendAllText(daFileEXPPath, item + "\n");
+            }
+        }
+        public void DaInventorySaver(List<string> inventory)
+        {
+            File.WriteAllText(daFileInventoryPath, "");
+            foreach (string item in inventory)
+            {
+                File.AppendAllText(daFileInventoryPath, item + "\n");
+            }
+        }
+        //PlayerExp = 0;
+        //PlayerLEVEL = 0;
+        public void GettingDaExpAndLevel()
+        {
+            List<string> f = new List<string>();
+            foreach (string item in File.ReadAllLines(daFileEXPPath))
+            {
+                f.Add(item);
+            }
+            PlayerExp = int.Parse(f[0]);
+            PlayerLEVEL = int.Parse(f[1]);
+        }
+        public void GettingDaInventory()
+        {
+            List<string> f = new List<string>();
+            foreach (string item in File.ReadAllLines(daFileInventoryPath))
+            {
+                f.Add(item);
+            }
+            PlayerPlayerInventory = f.ToList();
+        }
+        public void SettingDaPlayerStats(int playerHp)
+        {
+            File.WriteAllText(daFilePlayerStatsPath, playerHp.ToString());
+        }
+        public void GettingDaPlayerStats()
+        {
+            string f = File.ReadAllText(daFilePlayerStatsPath);
+            PlayerHP = int.Parse(f);
         }
     }
 }

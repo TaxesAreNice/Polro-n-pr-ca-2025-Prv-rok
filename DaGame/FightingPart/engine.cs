@@ -14,11 +14,15 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
         public int expReturner = 0;
         Random random = new Random();
 
+        public int PlayerHp = 100;
+        private int PlayerDamege = 10;
+
         private string daMonster = "";
         public void GettingDaMonster(string currentininyMonstertininy, List<string> playersItems)
         {
             daMonster = currentininyMonstertininy;
             playersItems = playersItems.ToList();
+            PlayerHp -= 10;
             currentInventory = playersItems;
             Console.Clear();
             Console.WriteLine(daMonster);

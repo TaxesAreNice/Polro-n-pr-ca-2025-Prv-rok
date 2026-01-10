@@ -68,6 +68,9 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
         private string userInput = "";
 
+        private int PlayerHp = 100;
+        private int PlayerDamage = 10;
+
         //x{xU + 4 - daMapPositionX},y{yU + i - daMapPositionY}" just in case, yk?
 
         
@@ -92,6 +95,17 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 PlayerMonsterLocation = mapInAMap.PlayerBoxPosition;
                 SettingDaXandYToDaPlayerBoxPosition();
                 
+                mapInAMap.SettingDaPlayerHp();
+                PlayerHp = mapInAMap.PlayerHp;
+
+                mapInAMap.SettingDaExpAndLevel();
+                currentEXP = mapInAMap.PlayerExp;
+                CurrentLevel = mapInAMap.PlayerLEVEL;
+                currentLevelbarier += CurrentLevel;
+
+                mapInAMap.SettingDaInventory();
+                currentInventory = mapInAMap.PlayerInventory;
+
                 mapInAMap.BossReader();
                 mapInAMap.BossSpawning(starterPlayer);
                 Converting2List("right");
@@ -164,6 +178,16 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
                 MapLoader();
                 SpawningDaPlayer();
+                Console.SetCursorPosition(xx, yy + 1);
+                {
+                    Console.WriteLine($"Level: {CurrentLevel}");
+                    
+                }
+                Console.SetCursorPosition(xx, yy + 2);
+                {
+                    Console.WriteLine($"Exp: {currentEXP}");
+
+                }
 
                 userInput = Console.ReadLine();
                 Console.Clear();
@@ -688,17 +712,21 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             else
             {
                 string daMonster = currentItems[PML];
+
+                Monsterengine.PlayerHp = PlayerHp;
+
                 Monsterengine.GettingDaMonster(daMonster, currentInventory);
                 Monsterengine.StartFight();
+
                 currentInventory = Monsterengine.currentInventory;
-                currentEXP = Monsterengine.expReturner;
+                currentEXP += Monsterengine.expReturner;
+                PlayerHp = Monsterengine.PlayerHp;
 
 
-                foreach (var item in currentInventory)
-                {
-                    //Console.WriteLine(item);
-                }
                 SettingDaPlayerLevel();
+                mapInAMap.UpdatingDaLevelAndExp(CurrentLevel, currentEXP);
+                mapInAMap.UpdatingDaInventory(currentInventory);
+                mapInAMap.SettingDaCurentPlayerStatus(PlayerHp);
 
                 currentItems[PML] = "x";
                 mapInAMap.DaMapSaver(PML); 
@@ -724,10 +752,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     currentEXP = 0;
                     currentLevelbarier += 1;
                 }
+            }
+            else
+            {
                 
-                Console.WriteLine(CurrentLevel);
-                Console.WriteLine(leftOverExp);
-                string? faf = Console.ReadLine();
             }
         }
     }

@@ -21,16 +21,50 @@ namespace DaGame.MapPart
         public int x = 0;
         public int y = 0;
 
+        public int PlayerExp;
+        public int PlayerLEVEL;
+
+        public int PlayerHp;
+
         public int PlayerBoxPosition = 4;
 
         List<string> currentItems = new List<string>();
         List<string> bossLocation = new List<string>();
         List<string> boosBackUp = new List<string>();
+        public List<string> PlayerInventory = new List<string>();
 
-        public void SettingThePlayerBoxLocation(int playerBoxPosition)
+
+        public void UpdatingDaLevelAndExp(int level, int exp)
         {
+            mapEngine.DaExpAndLevelSaver(exp, level);
+        }
+        public void UpdatingDaInventory(List<string> currentInventory)
+        {
+            List<string> currentPlayerItems = currentInventory.ToList();
+            mapEngine.DaInventorySaver(currentPlayerItems);
+        }
+        public void SettingDaCurentPlayerStatus(int playerHp)
+        {
+            mapEngine.SettingDaPlayerStats(playerHp);
+        }
+        public void SettingDaInventory()
+        {
+            mapEngine.GettingDaInventory();
+            PlayerInventory = mapEngine.PlayerPlayerInventory;
 
         }
+        public void SettingDaExpAndLevel()
+        {
+            mapEngine.GettingDaExpAndLevel();
+            PlayerExp = mapEngine.PlayerExp;
+            PlayerLEVEL = mapEngine.PlayerLEVEL;
+        }
+        public void SettingDaPlayerHp()
+        {
+            mapEngine.GettingDaPlayerStats();
+            PlayerHp = mapEngine.PlayerHP;
+        }
+
         public List<string>  CheckingTheRoomMovment(string direcion)
         {
             Console.WriteLine(direcion);
