@@ -4,8 +4,6 @@ using DaGame.MapPart;
 using Polročná_práca_2025_Prvý_rok.FightingPart;
 using Polročná_práca_2025_Prvý_rok.MapPart;
 
-Player player = new Player();
-Monster monster = new Monster(100, 5);
 engine engine = new engine();
 MapEngine mapEngine = new MapEngine();
 

@@ -22,7 +22,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             this.mapInAMap = new MapInAMap(mapeEngine);
 
         }
-        
+
         private int currentEXP = 0;
 
         private int CurrentLevel = 0;
@@ -73,7 +73,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
         //x{xU + 4 - daMapPositionX},y{yU + i - daMapPositionY}" just in case, yk?
 
-        
+
         public void DaVisualMap()
         {
 
@@ -87,16 +87,22 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             mapInAMap.GettingDaUplodedXandY();
 
 
-            
+
 
             if (starterPlayer) //mapInAMap.x != 0 && mapInAMap.y != 0
             {
                 mapInAMap.x -= 1;
                 PlayerMonsterLocation = mapInAMap.PlayerBoxPosition;
                 SettingDaXandYToDaPlayerBoxPosition();
-                
+
                 mapInAMap.SettingDaPlayerHp();
                 PlayerHp = mapInAMap.PlayerHp;
+                if (PlayerHp <= 0)
+                {
+                    moving = false;
+                    Console.WriteLine("Your dead, GGs");
+                    string? lastWords = Console.ReadLine();
+                }
 
                 mapInAMap.SettingDaExpAndLevel();
                 currentEXP = mapInAMap.PlayerExp;
@@ -119,18 +125,18 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 starterPlayer = true;
             }
         }
-        
+
         private void SettingDaXandYToDaPlayerBoxPosition()
         {
             int o = 0;
             int Lx = 0;
 
-        if (PlayerMonsterLocation >= 3 && PlayerMonsterLocation <= 5) // this checks if y's in the middle layer
+            if (PlayerMonsterLocation >= 3 && PlayerMonsterLocation <= 5) // this checks if y's in the middle layer
             {
                 y = 7;
                 o = 3;
             }
-        else if (PlayerMonsterLocation >= 6 && PlayerMonsterLocation <= 8) // here in the 3th one
+            else if (PlayerMonsterLocation >= 6 && PlayerMonsterLocation <= 8) // here in the 3th one
             {
                 y = 12;
                 o = 6;
@@ -142,7 +148,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
 
             Lx = PlayerMonsterLocation - o; // this gets the x position
-        
+
             if (Lx == 0)
             {
                 x = 4;
@@ -181,7 +187,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 Console.SetCursorPosition(xx, yy + 1);
                 {
                     Console.WriteLine($"Level: {CurrentLevel}");
-                    
+
                 }
                 Console.SetCursorPosition(xx, yy + 2);
                 {
@@ -283,7 +289,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         }
         private void MapLoader()
         {
-            
+
 
             for (int jj = 0; jj < 3; jj++)
             {
@@ -310,8 +316,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                         }
                         if (i == 2 && starterPlayer == false)
                         {
-                            SpawningDaMonster(xU, yU, i, xX, yY,j,jj);
-                           
+                            SpawningDaMonster(xU, yU, i, xX, yY, j, jj);
+
                         }
 
                         Console.SetCursorPosition(xU + 8, yU + i);
@@ -458,7 +464,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             PlayerMonsterLocation = 4;
             currentItems.Clear();
         }
-        
+
         private void SpawningDaPlayer()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -504,10 +510,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             int bbY = 0;
             if (daMapPositionXBackup > daMapPositionX)
             {
-                 bbX = daMapPositionXBackup - daMapPositionX;
-                 x -= bbX;
+                bbX = daMapPositionXBackup - daMapPositionX;
+                x -= bbX;
             }
-            else 
+            else
             {
                 bbX = daMapPositionX - daMapPositionXBackup;
                 x += bbX;
@@ -517,14 +523,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 bbX = daMapPositionYBackup - daMapPositionY;
                 y -= bbY;
             }
-            else 
+            else
             {
                 bbX = daMapPositionY - daMapPositionYBackup;
                 y += bbY;
             }
 
-            
-            
+
+
 
             Console.Clear();
         }
@@ -669,14 +675,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 }
                 else
                 {
-                    UpAndDownKiller(xU,yU,i);
+                    UpAndDownKiller(xU, yU, i);
                     Console.SetCursorPosition(xU + 3, yU + i);
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(" x ");
                         Console.ResetColor();
                     }
-                    
+
                 }
             }
         }
@@ -715,12 +721,19 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
                 Monsterengine.PlayerHp = PlayerHp;
 
-                Monsterengine.GettingDaMonster(daMonster, currentInventory);
+                Monsterengine.GettingDaMonster(daMonster, currentInventory, CurrentLevel);
                 Monsterengine.StartFight();
 
                 currentInventory = Monsterengine.currentInventory;
                 currentEXP += Monsterengine.expReturner;
                 PlayerHp = Monsterengine.PlayerHp;
+
+                if (PlayerHp <= 0)
+                {
+                    moving = false;
+                    Console.WriteLine("Your dead, GGs");
+                    string? lastWords = Console.ReadLine();
+                }
 
 
                 SettingDaPlayerLevel();
@@ -729,7 +742,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 mapInAMap.SettingDaCurentPlayerStatus(PlayerHp);
 
                 currentItems[PML] = "x";
-                mapInAMap.DaMapSaver(PML); 
+                mapInAMap.DaMapSaver(PML);
 
             }
         }
@@ -742,7 +755,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 CurrentLevel += 1;
                 if (currentEXP > 10 * currentLevelbarier)
                 {
-                    leftOverExp = currentEXP - 10 * currentLevelbarier; 
+                    leftOverExp = currentEXP - 10 * currentLevelbarier;
                     currentEXP = leftOverExp;
                     currentLevelbarier += 1;
                     SettingDaPlayerLevel(); // just in case if you level up again, so it can check again
@@ -755,9 +768,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
             else
             {
-                
+
             }
         }
     }
 }
-
