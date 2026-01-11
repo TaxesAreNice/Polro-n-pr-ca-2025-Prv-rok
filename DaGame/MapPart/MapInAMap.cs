@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Polročná_práca_2025_Prvý_rok.FightingPart;
+using Polročná_práca_2025_Prvý_rok.MapPart;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,15 +11,242 @@ namespace DaGame.MapPart
 {
     internal class MapInAMap
     {
+        MapEngine mapEngine;
+       
+        public MapInAMap(MapEngine mapEngine)
+        {
+            this.mapEngine = mapEngine;
+           
+        }
+        public int x = 0;
+        public int y = 0;
+
+        public int PlayerExp;
+        public int PlayerLEVEL;
+
+        public int PlayerHp;
+
+        public int PlayerBoxPosition = 4;
+
+        List<string> currentItems = new List<string>();
+        List<string> bossLocation = new List<string>();
+        List<string> boosBackUp = new List<string>();
+        public List<string> PlayerInventory = new List<string>();
 
 
+        public void UpdatingDaLevelAndExp(int level, int exp)
+        {
+            mapEngine.DaExpAndLevelSaver(exp, level);
+        }
+        public void UpdatingDaInventory(List<string> currentInventory)
+        {
+            List<string> currentPlayerItems = currentInventory.ToList();
+            mapEngine.DaInventorySaver(currentPlayerItems);
+        }
+        public void SettingDaCurentPlayerStatus(int playerHp)
+        {
+            mapEngine.SettingDaPlayerStats(playerHp);
+        }
+        public void SettingDaInventory()
+        {
+            mapEngine.GettingDaInventory();
+            PlayerInventory = mapEngine.PlayerPlayerInventory;
 
+        }
+        public void SettingDaExpAndLevel()
+        {
+            mapEngine.GettingDaExpAndLevel();
+            PlayerExp = mapEngine.PlayerExp;
+            PlayerLEVEL = mapEngine.PlayerLEVEL;
+        }
+        public void SettingDaPlayerHp()
+        {
+            mapEngine.GettingDaPlayerStats();
+            PlayerHp = mapEngine.PlayerHP;
+        }
 
-
-        public void CheckingTheRoomMovment(string direcion)
+        public List<string>  CheckingTheRoomMovment(string direcion)
         {
             Console.WriteLine(direcion);
-            // Implementation goes here
+            return RoomChanger(direcion);
+
+        }
+        public void GettingDaUplodedXandY()
+        {
+            List<int> DaThings = new List<int>();
+
+            if (mapEngine.firstlyRuniny == false)
+            {
+               var a = mapEngine.GettingDaXandYForDaRooms();
+               
+                foreach (var item in a) // the first one is y and the second one is x
+                {
+                    DaThings.Add(item);
+                }
+                x = DaThings[0];
+                y = DaThings[1];
+                PlayerBoxPosition = DaThings[2];
+                mapEngine.SettingThePlayerBoxLocation();
+            }
+            else
+            {
+                Console.WriteLine("Was?");
+                BossSpawning(false);
+
+            }
+        }
+        public void imLosingIt()
+        {
+            mapEngine.UpdatingDaXandYForDaRooms(x, y);  
+        }
+
+        private List<string> RoomChanger(string direcion)
+        {
+            List<string> daRoom = new List<string>();
+            if (direcion == "up")
+            {
+                CheckingDaWalls(direcion);
+                y--;
+
+            }
+            else if (direcion == "down")
+            {
+                CheckingDaWalls(direcion);
+                y++;
+            }
+            else if (direcion == "left")
+            {
+                CheckingDaWalls(direcion);
+                x--;
+            }
+            else if (direcion == "right")
+            {
+                CheckingDaWalls(direcion);
+                x++;
+            }
+
+            Console.WriteLine(y);
+            Console.WriteLine(x);
+
+            foreach (var item in mapEngine.DaMap[y][x])
+            {
+                    daRoom.Add(item);
+            }
+
+            if (y.ToString() == bossLocation[0] && x.ToString() == bossLocation[1])
+            {
+                daRoom.Add("Boss");
+                
+                if (bossLocation.Contains("up"))
+                {
+                    daRoom.Add("up");
+                }
+                if (bossLocation.Contains("down"))
+                {
+                    daRoom.Add("down");
+                }
+                if (bossLocation.Contains("left"))
+                {
+                    daRoom.Add("left");
+                }
+                if (bossLocation.Contains("right"))
+                {
+                    daRoom.Add("right");
+                }
+
+                daRoom.Add(x.ToString());
+                daRoom.Add(y.ToString());
+
+                Console.WriteLine("You can feel the boss is in one of these walls"); ///////////////////// hier, buddy bud!
+            }
+            else
+            {
+                daRoom.Add("idk, filler");
+                daRoom.Add(x.ToString());
+                daRoom.Add(y.ToString());
+            }
+
+            
+
+                return daRoom;
+            // i = the y's
+            // j = the x's
+            // k = the items
+        }
+        private void CheckingDaWalls(string direcion)
+        {
+            int xF = mapEngine.daMapSizeX;
+            int yF = mapEngine.daMapSizeY;
+
+            if (direcion == "up" && y == 0)
+            {
+                y++;
+            }
+            else if (direcion == "down" && y + 1 == yF)
+            {
+                y--;
+            }
+            else if (direcion == "left" && x == 0)
+            {
+                x++;
+            }
+            else if (direcion == "right" && x + 1 == xF)
+            {
+                x--;
+            }
+
+            
+
+        }
+
+        public void BossChecking()
+        {
+            Console.WriteLine("y:");
+                foreach (var item in bossLocation)
+            {
+                Console.WriteLine(item);
+                
+            }
+            Console.WriteLine(":x");
+                
+        }
+        public void GettingDaPlayerBoxPossition(int PlayerMonsterLocation)
+        {
+            mapEngine.gettingdaBoxPlayerPosition(PlayerMonsterLocation);
+        }
+        
+        public void BossSpawning(bool starterPlayer)
+        {
+            if (starterPlayer)
+            {
+                foreach (var item in mapEngine.BossReader())
+                {
+                    bossLocation.Add(item);
+                    item.ToString();
+                    mapEngine.SavingDaBossLocation(item, 1);
+                }
+            }
+            else
+            {
+                foreach (var item in mapEngine.DaBossPlacer())
+                {
+                    bossLocation.Add(item);
+                    item.ToString();
+                    mapEngine.SavingDaBossLocation(item, 1);
+                }
+                mapEngine.SettingDaPlayerBoxPosition();
+            }
+                
+            
+        }
+        public void DaMapSaver(int PML)
+        {
+            mapEngine.DaMapSaver(x, y, PML);
+        }
+        
+        public void BossReader()
+        {
+            mapEngine.BossReader();
         }
     }
 }

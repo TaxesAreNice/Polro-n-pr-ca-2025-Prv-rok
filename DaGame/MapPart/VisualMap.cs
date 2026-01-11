@@ -1,18 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using DaGame.FightingPart;
 using DaGame.MapPart;
+using Polročná_práca_2025_Prvý_rok.FightingPart;
 
 namespace Polročná_práca_2025_Prvý_rok.MapPart
 {
     internal class VisualMap
     {
-        MapInAMap mapInAMap = new MapInAMap();
+        BossFight bossFight = new BossFight();
+
+        engine Monsterengine = new engine();
+
+        MapInAMap mapInAMap;
+        public VisualMap(MapEngine mapeEngine)
+        {
+            this.mapInAMap = new MapInAMap(mapeEngine);
+
+        }
+        
+        private int currentEXP = 0;
+
+        private int CurrentLevel = 0;
+        private int currentLevelbarier = 1;
+
+        public List<string> currentInventory = new List<string>();
 
         private int xx = 5;
         private int yy = 25;
+
+        private int PlayerMonsterLocation = 4;
+
+        private int hablyICanFly = 0;
+
+        public List<string> daRoom = new List<string>();
+
+        private List<string> currentItems = new List<string>();
 
         private bool offSet = false;
 
@@ -35,27 +62,112 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private int x = 14;
         private int y = 7;
 
+        internal int tester = 0;
+
+        private bool starterPlayer = true;
 
         private string userInput = "";
+
+        private int PlayerHp = 100;
+        private int PlayerDamage = 10;
 
         //x{xU + 4 - daMapPositionX},y{yU + i - daMapPositionY}" just in case, yk?
 
         
         public void DaVisualMap()
         {
+
+            CheckingForTheFirstTime();
+
             settingUpDaPlayer();
             DaMapThing();
         }
+        private void CheckingForTheFirstTime()
+        {
+            mapInAMap.GettingDaUplodedXandY();
 
+
+            
+
+            if (starterPlayer) //mapInAMap.x != 0 && mapInAMap.y != 0
+            {
+                mapInAMap.x -= 1;
+                PlayerMonsterLocation = mapInAMap.PlayerBoxPosition;
+                SettingDaXandYToDaPlayerBoxPosition();
+                
+                mapInAMap.SettingDaPlayerHp();
+                PlayerHp = mapInAMap.PlayerHp;
+
+                mapInAMap.SettingDaExpAndLevel();
+                currentEXP = mapInAMap.PlayerExp;
+                CurrentLevel = mapInAMap.PlayerLEVEL;
+                currentLevelbarier += CurrentLevel;
+
+                mapInAMap.SettingDaInventory();
+                currentInventory = mapInAMap.PlayerInventory;
+
+                mapInAMap.BossReader();
+                mapInAMap.BossSpawning(starterPlayer);
+                Converting2List("right");
+                starterPlayer = false;
+            }
+            else
+            {
+                //// it goes here
+                mapInAMap.BossReader();
+                mapInAMap.BossSpawning(starterPlayer);
+                starterPlayer = true;
+            }
+        }
+        
+        private void SettingDaXandYToDaPlayerBoxPosition()
+        {
+            int o = 0;
+            int Lx = 0;
+
+        if (PlayerMonsterLocation >= 3 && PlayerMonsterLocation <= 5) // this checks if y's in the middle layer
+            {
+                y = 7;
+                o = 3;
+            }
+        else if (PlayerMonsterLocation >= 6 && PlayerMonsterLocation <= 8) // here in the 3th one
+            {
+                y = 12;
+                o = 6;
+            }
+        else // and here if it's in the first one
+            {
+                y = 2;
+                o = 0;
+            }
+
+            Lx = PlayerMonsterLocation - o; // this gets the x position
+        
+            if (Lx == 0)
+            {
+                x = 4;
+            }
+            else if (Lx == 1)
+            {
+                x = 14;
+            }
+            else if (Lx == 2)
+            {
+                x = 24;
+            }
+
+        }
         private void settingUpDaPlayer()
         {
             x += daMapPositionX;
             y += daMapPositionY;
         }
+        private void gettingDaPlayerBoxPosition()
+        {
+            // here we'll do the updating da playerBoxLocation thing
+        }
         private void DaMapThing()
         {
-            MapLoader();
-            SpawningDaPlayer();
             Console.SetCursorPosition(xx, yy);
             {
                 Console.WriteLine($"x{x},y{y}, ? = settings");
@@ -63,6 +175,19 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
             while (moving)
             {
+
+                MapLoader();
+                SpawningDaPlayer();
+                Console.SetCursorPosition(xx, yy + 1);
+                {
+                    Console.WriteLine($"Level: {CurrentLevel}");
+                    
+                }
+                Console.SetCursorPosition(xx, yy + 2);
+                {
+                    Console.WriteLine($"Exp: {currentEXP}");
+
+                }
 
                 userInput = Console.ReadLine();
                 Console.Clear();
@@ -79,6 +204,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     else
                     {
                         y -= 5;
+                        PlayerMonsterLocation -= 3;
+                        CheckingDaMovment(PlayerMonsterLocation);
                         SpawningDaPlayer();
                     }
                 }
@@ -93,6 +220,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     else
                     {
                         y += 5;
+                        PlayerMonsterLocation += 3;
+                        CheckingDaMovment(PlayerMonsterLocation);
                         SpawningDaPlayer();
                     }
                 }
@@ -107,6 +236,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     else
                     {
                         x -= 10;
+                        PlayerMonsterLocation -= 1;
+                        CheckingDaMovment(PlayerMonsterLocation);
                         SpawningDaPlayer();
                     }
                 }
@@ -121,6 +252,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     else
                     {
                         x += 10;
+                        PlayerMonsterLocation += 1;
+                        CheckingDaMovment(PlayerMonsterLocation);
                         SpawningDaPlayer();
                     }
                 }
@@ -133,22 +266,32 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     SpawningDaPlayer();
                 }
 
+                UpdatingDaPlayerBoxLocation(PlayerMonsterLocation);
+
                 Console.SetCursorPosition(xx, yy);
                 {
                     Console.WriteLine($"x{x},y{y}, ? = settings");
                 }
+                foreach (var item in daRoom)
+                { Console.WriteLine(item); }
             }
             Console.Clear();
         }
+        private void UpdatingDaPlayerBoxLocation(int PlayerMonsterLocation)
+        {
+            mapInAMap.GettingDaPlayerBoxPossition(PlayerMonsterLocation);
+        }
         private void MapLoader()
         {
+            
+
             for (int jj = 0; jj < 3; jj++)
             {
-                int yY = 5 * jj;
+                int yY = 5 * jj; // IF yY = 0 = first row, if yY = 5 = second row, if yY = 10 = third row ... jj * 3
                 int j = 0;
                 for (j = 0; j < 3; j++)
                 {
-                    int xX = 10 * j;
+                    int xX = 10 * j; // now xX = 0 = first column, IF xX = 10 = second column, if xX = 20 = third column ... just use j here
 
                     int xU = daMapPositionX + xX;
                     int yU = daMapPositionY + yY;
@@ -165,14 +308,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                         {
                             Console.WriteLine(middleBox);
                         }
-                        if (i == 2)
+                        if (i == 2 && starterPlayer == false)
                         {
-                            Console.SetCursorPosition(xU + 4, yU + i);
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("x");
-                                Console.ResetColor();
-                            }
+                            SpawningDaMonster(xU, yU, i, xX, yY,j,jj);
+                           
                         }
 
                         Console.SetCursorPosition(xU + 8, yU + i);
@@ -188,6 +327,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     }
                 }
             }
+            hablyICanFly = 0;
         }
         private void CheckingEadges()
         {
@@ -217,67 +357,124 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private void CheckingBeforeCheckingEadges()
         {
             string direction = "";
+            bool bossHere = false;
+
+            if (currentItems.Contains("Boss"))
+            {
+                bossHere = true;
+            }
+
             if (userInput == "a" && x - daMapPositionX == 4 && y - daMapPositionY == 7)
             {
-                x = 14 + daMapPositionX;
-                y = 7 + daMapPositionY;
-                offSet = true;
-                direction = "left";
-                mapInAMap.CheckingTheRoomMovment(direction);
-
-                Console.WriteLine("left");
+                if (bossHere && currentItems.Contains("right"))
+                {
+                    bossFight.RunBossFight();
+                    moving = false;
+                }
+                else
+                {
+                    SettingThePlayerRoomValue();
+                    direction = "left";
+                    UpdatingDaXandYOfDaRoom();
+                    Converting2List(direction);
+                    Console.WriteLine("left");
+                }
             }
             else if (userInput == "d" && x - daMapPositionX == 24 && y - daMapPositionY == 7)
             {
-                x = 14 + daMapPositionX;
-                y = 7 + daMapPositionY;
-                offSet = true;
-                direction = "right";
-                mapInAMap.CheckingTheRoomMovment(direction);
-
-                Console.WriteLine("right");
+                if (bossHere && currentItems.Contains("left"))
+                {
+                    bossFight.RunBossFight();
+                    moving = false;
+                }
+                else
+                {
+                    SettingThePlayerRoomValue();
+                    direction = "right";
+                    Converting2List(direction);
+                    UpdatingDaXandYOfDaRoom();
+                    Console.WriteLine("right");
+                }
             }
             else if (userInput == "w" && y - daMapPositionY == 2 && x - daMapPositionX == 14)
             {
-                x = 14 + daMapPositionX;
-                y = 7 + daMapPositionY;
-                offSet = true;
-                direction = "up";
-                mapInAMap.CheckingTheRoomMovment(direction);
-
-                Console.WriteLine("up");
+                if (bossHere && currentItems.Contains("down"))
+                {
+                    bossFight.RunBossFight();
+                    moving = false;
+                }
+                else
+                {
+                    SettingThePlayerRoomValue();
+                    direction = "up";
+                    Converting2List(direction);
+                    UpdatingDaXandYOfDaRoom();
+                    Console.WriteLine("up");
+                }
             }
             else if (userInput == "s" && y - daMapPositionY == 12 && x - daMapPositionX == 14)
             {
-                x = 14 + daMapPositionX;
-                y = 7 + daMapPositionY;
-                offSet = true;
-                direction = "down";
-                mapInAMap.CheckingTheRoomMovment(direction);
+                if (bossHere && currentItems.Contains("up"))
+                {
+                    bossFight.RunBossFight();
+                    moving = false;
+                }
+                else
+                {
+                    SettingThePlayerRoomValue();
+                    direction = "down";
+                    Converting2List(direction);
+                    UpdatingDaXandYOfDaRoom();
 
-                Console.WriteLine("down");
+                    Console.WriteLine("down");
+                }
             }
             else
             {
                 CheckingEadges();
             }
         }
+        private void UpdatingDaXandYOfDaRoom()
+        {
+            mapInAMap.imLosingIt();
+        }
+
+        private List<string> Converting2List(string direction)
+        {
+            var a = mapInAMap.CheckingTheRoomMovment(direction);
+            foreach (var item in a)
+            {
+                currentItems.Add(item);
+            }
+            return currentItems;
+        }
+
+        private void SettingThePlayerRoomValue()
+        {
+            x = 14 + daMapPositionX;
+            y = 7 + daMapPositionY;
+            offSet = true;
+            starterPlayer = false;
+            PlayerMonsterLocation = 4;
+            currentItems.Clear();
+        }
+        
         private void SpawningDaPlayer()
         {
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.SetCursorPosition(x - 1, y - 1);
+            {
+                Console.WriteLine("   ");
+            }
+
             Console.SetCursorPosition(x - 1, y);
             {
-                Console.WriteLine("|");
-            }
 
-            Console.SetCursorPosition(x, y);
-            {
-
-                Console.WriteLine(movement);
+                Console.WriteLine($"|{movement}|");
             }
-            Console.SetCursorPosition(x + 1, y);
+            Console.SetCursorPosition(x - 1, y + 1);
             {
-                Console.WriteLine("|");
+                Console.WriteLine("   ");
             }
             Console.ResetColor();
         }
@@ -345,6 +542,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 {
                     Console.WriteLine("End the game(end)");
                 }
+                Console.SetCursorPosition(20, 7);
+                {
+                    Console.WriteLine("Admin settings(admin)");
+                }
+                Console.SetCursorPosition(20, 9);
+                {
+                    Console.WriteLine("Back to the game(anything else)");
+                }
 
                 string? userSettingsInput = Console.ReadLine();
                 Console.Clear();
@@ -360,17 +565,199 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     moving = false;
                     settingLoop = false;
                 }
+                else if (userSettingsInput == "admin")
+                {
+                    //add a new loop with a new gui or something...
+                    mapInAMap.BossChecking();
+                    settingLoop = false;
+                    string? adminInput = Console.ReadLine();
+                }
                 else
                 {
-                    Console.SetCursorPosition(20, 6);
-                    {
-                        Console.WriteLine("What?");
-                    }
+                    settingLoop = false;
                 }
                 Console.Clear();
                 MapLoader();
                 SpawningDaPlayer();
             }
         }
+        private void SpawningDaMonster(int xU, int yU, int i, int xX, int yY, int j, int jj)
+        {
+
+            if (yY == 5 && xX == 10)
+            {
+            }
+            else
+            {
+                if (currentItems[j + jj * 3] == "Item")
+                {
+                    UpAndDownKiller(xU, yU, i);
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.WriteLine(@"-o-");
+                        Console.ResetColor();
+                    }
+                }
+                else if (currentItems[j + jj * 3] == "Zombie")
+                {
+                    Console.SetCursorPosition(xU + 4, yU + i - 1);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.WriteLine(@"o");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.WriteLine(@"/X\");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i + 1);
+                    {
+                        Console.WriteLine(@"/ \");
+                        Console.ResetColor();
+                    }
+                }
+                else if (currentItems[j + jj * 3] == "Boss")
+                {
+                    Console.SetCursorPosition(xU + 3, yU + i - 1);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine(@" O ");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.WriteLine(@"/X\");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i + 1);
+                    {
+                        Console.WriteLine(@"/ \");
+                        Console.ResetColor();
+                    }
+                }
+                else if (currentItems[j + jj * 3] == "Orc")
+                {
+                    Console.SetCursorPosition(xU + 3, yU + i - 1);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.WriteLine(@"^=^");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.WriteLine(@"/-\");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i + 1);
+                    {
+                        Console.WriteLine(@"/ \");
+                        Console.ResetColor();
+                    }
+                }
+                else if (currentItems[j + jj * 3] == "StoneGolem")
+                {
+                    Console.SetCursorPosition(xU + 3, yU + i - 1);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine(@" _ ");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.WriteLine(@"/O\");
+                    }
+                    Console.SetCursorPosition(xU + 3, yU + i + 1);
+                    {
+                        Console.WriteLine(@"/ \");
+                        Console.ResetColor();
+                    }
+                }
+                else
+                {
+                    UpAndDownKiller(xU,yU,i);
+                    Console.SetCursorPosition(xU + 3, yU + i);
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(" x ");
+                        Console.ResetColor();
+                    }
+                    
+                }
+            }
+        }
+        private void UpAndDownKiller(int xU, int yU, int i)
+        {
+            Console.SetCursorPosition(xU + 3, yU + i - 1);
+            {
+                Console.WriteLine(@"   ");
+            }
+            Console.SetCursorPosition(xU + 3, yU + i + 1);
+            {
+                Console.WriteLine(@"   ");
+            }
+        }
+        private void CheckingDaMovment(int PML)
+        {
+            if (currentItems.Count == 0)
+            {
+            }
+            else if (currentItems[PML] == "x")
+            {
+            }
+            else if (currentItems[PML] == "Item")
+            {
+                Console.WriteLine("You found an item!");
+                currentItems[PML] = "x";
+                mapInAMap.DaMapSaver(PML);
+            }
+            else if (PML == 4)
+            {
+                Console.WriteLine("x");
+            }
+            else
+            {
+                string daMonster = currentItems[PML];
+
+                Monsterengine.PlayerHp = PlayerHp;
+
+                Monsterengine.GettingDaMonster(daMonster, currentInventory);
+                Monsterengine.StartFight();
+
+                currentInventory = Monsterengine.currentInventory;
+                currentEXP += Monsterengine.expReturner;
+                PlayerHp = Monsterengine.PlayerHp;
+
+
+                SettingDaPlayerLevel();
+                mapInAMap.UpdatingDaLevelAndExp(CurrentLevel, currentEXP);
+                mapInAMap.UpdatingDaInventory(currentInventory);
+                mapInAMap.SettingDaCurentPlayerStatus(PlayerHp);
+
+                currentItems[PML] = "x";
+                mapInAMap.DaMapSaver(PML); 
+
+            }
+        }
+        private void SettingDaPlayerLevel()
+        {
+            int leftOverExp = 0;
+
+            if (currentEXP >= 10 * currentLevelbarier)
+            {
+                CurrentLevel += 1;
+                if (currentEXP > 10 * currentLevelbarier)
+                {
+                    leftOverExp = currentEXP - 10 * currentLevelbarier; 
+                    currentEXP = leftOverExp;
+                    currentLevelbarier += 1;
+                    SettingDaPlayerLevel(); // just in case if you level up again, so it can check again
+                }
+                else
+                {
+                    currentEXP = 0;
+                    currentLevelbarier += 1;
+                }
+            }
+            else
+            {
+                
+            }
+        }
     }
 }
+
