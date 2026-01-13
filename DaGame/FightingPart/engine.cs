@@ -245,7 +245,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             while (playingPickingOption)
             {
 
-                string? userInput = Console.ReadLine();
+                string userInput = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
 
                 if (userInput == "d")
@@ -320,6 +320,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             if (MonsterHp <= 0)
             {
                 Console.WriteLine("Monster defeated!");
+                string? userInput = Console.ReadLine();
                 PlayerHp = PlayerHp + 50;
                 if (PlayerHp > 100)
                 {

@@ -194,8 +194,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     Console.WriteLine($"Exp: {currentEXP}");
 
                 }
-
-                userInput = Console.ReadLine();
+                userInput = Console.ReadKey(true).KeyChar.ToString();
                 Console.Clear();
                 MapLoader();
 
@@ -725,7 +724,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 Monsterengine.StartFight();
 
                 currentInventory = Monsterengine.currentInventory;
-                currentEXP += Monsterengine.expReturner;
+                if (currentLevelbarier !<= 5)
+                {
+                    currentEXP += Monsterengine.expReturner;
+                }
                 PlayerHp = Monsterengine.PlayerHp;
 
                 if (PlayerHp <= 0)
