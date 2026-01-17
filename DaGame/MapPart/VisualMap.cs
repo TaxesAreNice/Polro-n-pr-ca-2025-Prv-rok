@@ -737,7 +737,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     string? lastWords = Console.ReadLine();
                 }
 
-
+                //banana
                 SettingDaPlayerLevel();
                 mapInAMap.UpdatingDaLevelAndExp(CurrentLevel, currentEXP);
                 mapInAMap.UpdatingDaInventory(currentInventory);
