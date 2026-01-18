@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +26,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
         private int MonsterHp = 100;
         private int MonseterDamage = 10;
 
+        private bool quitedDaInventory = false;
 
         private string daMonster = "";
         public void GettingDaMonster(string currentininyMonstertininy, List<string> playersItems, int lvl)
@@ -67,9 +66,9 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                 stoneGolem.SendingStats(this);
             }
             PlayerHp += lvl;
-            if (lvl != 0)
+            if (lvl! > 1)
             {
-                PlayerDamage = PlayerDamage * lvl;
+                PlayerDamage = PlayerDamage * (lvl / 2);
             }
         }
         public void StartFight()
@@ -300,7 +299,19 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     else if (x == 1)
                     {
                         Console.Clear();
-                        // Inventory
+                        Inventory();
+                        if (!quitedDaInventory)
+                        {
+                            Console.Clear();
+                            RenderingTheMonster();
+                            MonsterAttack();
+                            // Inventory
+                        }
+                        else
+                        {
+                            quitedDaInventory = false;
+                            TheFight();
+                        }
                     }
                     else
                     {
@@ -313,6 +324,361 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                 Console.ForegroundColor = ConsoleColor.Red;
             }
             Console.Clear();
+        }
+        private void CreatingInventory()
+        {
+            int daX = 30;
+            int daY = 7;
+
+            TheOInventoryPart(daX, daY);
+            daY += 1;
+
+            for (int i = 0; i < 3; i++)
+            {
+                TheLineInventoryPart(daX, daY);
+                daY += 2;
+                TheOInventoryPart(daX, daY);
+                daY += 1;
+            }
+
+            daVPart(daX, daY);
+            daY++;
+
+            daVUPart(daX, daY);
+
+            spawingDaInventoryItems();
+        }
+        private void spawingDaInventoryItems()
+        {
+            int daXM = 36;
+            int daYM = 8;
+
+            int k = 0;
+
+            for (int i = 0; i < 3; i++) // for y
+            {
+                for (int j = 0; j < 4; j++) // for x
+                {
+                    if (k! < currentInventory.Count)
+                    {
+                        CheckingDaInventoryItems(daXM, daYM, k);
+                        //Console.WriteLine(currentInventory[k]);
+                        k++;
+                        daXM += 12;
+                    }
+                }
+                daXM = 36;
+                daYM += 3;
+            }
+        }
+        private void CheckingDaInventoryItems(int daXf, int daYf, int order)
+        {
+
+            if (currentInventory[order] == "leather armor")
+            {
+                Console.SetCursorPosition(daXf - 1, daYf);
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.WriteLine("=▄=");
+                    Console.WriteLine("o");
+                }
+            }
+            else if (currentInventory[order] == "Spagettie")
+            {
+                Console.SetCursorPosition(daXf - 1, daYf);
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("=");
+                }
+            }
+            else if (currentInventory[order] == "Chicken")
+            {
+                Console.SetCursorPosition(daXf - 1, daYf);
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine("O-c");
+                }
+            }
+            else if (currentInventory[order] == "funny tasing candy")
+            {
+                Console.SetCursorPosition(daXf - 1, daYf);
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Console.WriteLine("oOo");
+                }
+            }
+            else if (currentInventory[order] == "Golden chicken")
+            {
+                Console.SetCursorPosition(daXf - 1, daYf);
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("O-c");
+                }
+            }
+            else if (currentInventory[order] == "iron armor")
+            {
+                Console.SetCursorPosition(daXf - 1, daYf);
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.WriteLine("=▄=");
+                }
+            }
+            else if (currentInventory[order] == "Stone sword")
+            {
+                Console.SetCursorPosition(daXf - 1, daYf);
+                {
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine("+--");
+                }
+            }
+            else if (currentInventory[order] == "Iron sword")
+            {
+                Console.SetCursorPosition(daXf - 1, daYf);
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine("+--");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Something was missing from the Item side of the inventory");
+            }
+            Console.ResetColor();
+        }
+
+        private void daVPart(int daXx, int daYy)
+        {
+            Console.SetCursorPosition(daXx, daYy);
+            {
+                Console.WriteLine("|");
+            }
+            daXx += 36;
+
+            for (int i = 0; i < 2; i++)
+            {
+                Console.SetCursorPosition(daXx, daYy);
+                {
+                    Console.WriteLine("|");
+                }
+                daXx += 12;
+            }
+        }
+        private void daVUPart(int daXx, int daYy)
+        {
+            Console.SetCursorPosition(daXx, daYy);
+            {
+                Console.WriteLine("o------------------------------------------------");
+            }
+            daXx += 36;
+
+
+            Console.SetCursorPosition(daXx, daYy);
+            {
+                Console.WriteLine("o-----------");
+            }
+            daXx += 12;
+            Console.SetCursorPosition(daXx, daYy);
+            {
+                Console.WriteLine("o");
+            }
+        }
+        private void TheOInventoryPart(int daXx, int daYy)
+        {
+            int daX = daXx;
+            int daY = daYy;
+            int daExer = 0;
+            void TheOPart()
+            {
+                Console.SetCursorPosition(daX + daExer, daY);
+                {
+                    Console.WriteLine("o");
+                }
+            }
+            void TheLinePart()
+            {
+                Console.SetCursorPosition(daX + daExer, daY);
+                {
+                    Console.WriteLine("-----------"); // 11 dashes
+                }
+            }
+
+            TheOPart();
+            daX++;
+            for (int i = 0; i < 4; i++)
+            {
+                TheLinePart();
+                daExer += 11;
+                TheOPart();
+                daExer += 1;
+            }
+
+        }
+        private void TheLineInventoryPart(int daXx, int daYy)
+        {
+            int daX = daXx;
+            int daY = daYy;
+            int daExer = 0;
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    Console.SetCursorPosition(daX + daExer, daY);
+                    {
+                        Console.WriteLine("|");
+                    }
+                    daExer += 12;
+                }
+                daY++;
+                daExer = 0;
+            }
+        }
+        public void Inventory()
+        {
+            int daXM = 36;
+            int daYM = 9;
+
+            int o = 0;
+            int currentPosition = 0;
+            int NumberMinusO = currentPosition = 0;
+
+            bool playingInInventory = true;
+            bool usededAnItem = false;
+
+            string UsededItem = "";
+
+            while (playingInInventory)
+            {
+                Console.Clear();
+                CreatingInventory();
+
+                if (currentPosition < 4)
+                {
+                    o = 0;
+                }
+                else if (currentPosition < 8)
+                {
+                    o = 4;
+                }
+                else if (currentPosition < 12)
+                {
+                    o = 8;
+                }
+                else
+                {
+                    o = 12;
+                }
+                NumberMinusO = currentPosition - o;
+
+                CurrentPositionConverter2XandYANDCursorPrinter(o, daXM, daYM, currentPosition);
+                Console.WriteLine($"Your Hp is {PlayerHp}");
+
+                string userInput = Console.ReadKey(true).KeyChar.ToString();
+
+                if (userInput == "a" && NumberMinusO != 0)
+                {
+                    currentPosition -= 1;
+                }
+                else if (userInput == "d" && NumberMinusO != 3)
+                {
+                    currentPosition += 1;
+                }
+                else if (userInput == "w" && o != 0)
+                {
+                    currentPosition -= 4;
+                }
+                else if (userInput == "s" && o != 8)
+                {
+                    currentPosition += 4;
+                }
+                else if (userInput == "e")
+                {
+                    UsededItem = InventoryItemUsager(currentPosition, usededAnItem);
+                    if (!usededAnItem)
+                    {
+                        if (UsededItem == "" || UsededItem == "leather armor" || UsededItem == "iron armor" || UsededItem == "Iron sword" || UsededItem == "Stone sword")
+                        {
+                            usededAnItem = false;
+                        }
+                        else
+                        {
+                            usededAnItem = true;
+                        }
+                    }
+                }
+                else if (userInput == "q")
+                {
+                    if (!usededAnItem)
+                    {
+                        quitedDaInventory = true;
+                    }
+                    playingInInventory = false;
+                }
+                else
+                {
+                    Console.WriteLine("fafafela");
+                }
+            }
+        }
+        private string InventoryItemUsager(int currentPosition, bool usededAnItem)
+        {
+            if (currentInventory.Count > currentPosition)
+            {
+                string daItem = currentInventory[currentPosition];
+                if (daItem == "Spagettie")
+                {
+                    PlayerHp += 20;
+                    if (PlayerHp > 100)
+                    {
+                        PlayerHp = 100;
+                    }
+                    currentInventory.Remove("Spagettie");
+                }
+                else if (daItem == "Chicken")
+                {
+                    PlayerHp += 35;
+                    if (PlayerHp > 100)
+                    {
+                        PlayerHp = 100;
+                    }
+                    currentInventory.Remove("Chicken");
+                }
+                else if (daItem == "funny tasing candy")
+                {
+                    Random random = new Random();
+                    int daRandomNumber = random.Next(-25, 50);
+                    PlayerHp += daRandomNumber;
+
+                    if (PlayerHp > 100)
+                    {
+                        PlayerHp = 100;
+                    }
+                    else if (PlayerHp < 0)
+                    {
+                        PlayerHp = 1;
+                    }
+                    currentInventory.Remove("funny tasing candy");
+                }
+                else if (daItem == "Golden chicken")
+                {
+                    PlayerHp += 50;
+                    if (PlayerHp > 100)
+                    {
+                        PlayerHp = 100;
+                    }
+                    currentInventory.Remove("Golden chicken");
+                }
+                return daItem;
+            }
+            return "";
+        }
+        private void CurrentPositionConverter2XandYANDCursorPrinter(int o, int daXM, int daYM, int currentPosition)
+        {
+            int xH = ((currentPosition - o) * 12) + daXM;
+            int yH = ((o / 4) * 3) + daYM;
+            Console.SetCursorPosition(xH, yH);
+            {
+                Console.WriteLine("o");
+            }
         }
         private void PlayerAttack()
         {
@@ -360,22 +726,22 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             if (daMonster == "Zombie")
             {
                 expReturner = 10;
-                daNumber = random.Next(0, 4);
+                daNumber = random.Next(0, 3);
             }
             else if (daMonster == "Orc")
             {
                 expReturner = 15;
-                daNumber = random.Next(3, 6);
+                daNumber = random.Next(3, 7);
             }
             else if (daMonster == "StoneGolem")
             {
                 expReturner = 20;
-                daNumber = random.Next(3, 6);
+                daNumber = random.Next(3, 8);
             }
             else
             {
                 expReturner = 10;
-                daNumber = random.Next(0, 6);
+                daNumber = random.Next(0, 8);
             }
 
             if (currentInventory.Count >= 12)

@@ -266,6 +266,12 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 {
                     Settings();
                 }
+                else if (userInput == "e")
+                {
+                    Monsterengine.currentInventory = currentInventory;
+                    Monsterengine.Inventory();
+                    Console.Clear();
+                }
                 else
                 {
                     SpawningDaPlayer();
@@ -724,7 +730,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 Monsterengine.StartFight();
 
                 currentInventory = Monsterengine.currentInventory;
-                if (currentLevelbarier !<= 5)
+                if (currentLevelbarier! <= 5)
                 {
                     currentEXP += Monsterengine.expReturner;
                 }
