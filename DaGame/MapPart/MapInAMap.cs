@@ -24,7 +24,7 @@ namespace DaGame.MapPart
         public int PlayerExp;
         public int PlayerLEVEL;
 
-        public int PlayerHp;
+        public decimal PlayerHp;
 
         public int PlayerBoxPosition = 4;
 
@@ -43,7 +43,7 @@ namespace DaGame.MapPart
             List<string> currentPlayerItems = currentInventory.ToList();
             mapEngine.DaInventorySaver(currentPlayerItems);
         }
-        public void SettingDaCurentPlayerStatus(int playerHp)
+        public void SettingDaCurentPlayerStatus(decimal playerHp)
         {
             mapEngine.SettingDaPlayerStats(playerHp);
         }
@@ -157,7 +157,7 @@ namespace DaGame.MapPart
                 daRoom.Add(x.ToString());
                 daRoom.Add(y.ToString());
 
-                Console.WriteLine("You can feel the boss is in one of these walls"); ///////////////////// hier, buddy bud!
+                Console.WriteLine("You can feel the boss is in one of these walls");
             }
             else
             {
@@ -165,9 +165,7 @@ namespace DaGame.MapPart
                 daRoom.Add(x.ToString());
                 daRoom.Add(y.ToString());
             }
-
             
-
                 return daRoom;
             // i = the y's
             // j = the x's

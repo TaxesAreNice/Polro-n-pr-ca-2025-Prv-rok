@@ -4,16 +4,14 @@ using DaGame.MapPart;
 using Polročná_práca_2025_Prvý_rok.FightingPart;
 using Polročná_práca_2025_Prvý_rok.MapPart;
 
-Player player = new Player();
-Monster monster = new Monster(100, 5);
 engine engine = new engine();
 MapEngine mapEngine = new MapEngine();
 
 VisualMap visualMap = new VisualMap(mapEngine);
 //engine.Play(player, monster);
+bool itsDead = false;
 
-mapEngine.Run();
-visualMap.DaVisualMap();
+itsDead = mapEngine.Run();
 
-
-//bug, idk why, but i think the direcion of da boss is why its giving an error at MonsterSpawner, so... check out da boss direcion path
+if (itsDead!)
+{ visualMap.DaVisualMap(); }

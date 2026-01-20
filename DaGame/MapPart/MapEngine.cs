@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,10 +11,10 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DaGame.MapPart
 {
-    
+
     internal class MapEngine
     {
-        public int PlayerHP = 100;
+        public decimal PlayerHP = 100;
         public int PlayerDamage = 10;
 
         private const int V = 12;
@@ -39,7 +40,7 @@ namespace DaGame.MapPart
         string daFileSettingsPath = @"";
 
         private string daFilePath = @"";
-        
+
         private string dafileMapPath = @"";
 
         private string daFileInventoryPath = @"";
@@ -76,21 +77,23 @@ namespace DaGame.MapPart
         {
 
         }
-        public void Run()
+        public bool Run()
         {
             bool FirstRun = true;
+            bool endingGame = false;
 
             DaPathChoser();
             FirstRun = DaFileChecker(FirstRun);
 
             if (FirstRun)
             {
-                GrabDificulty();
-
+                endingGame = GrabDificulty();
+                return endingGame;
             }
             else
             {
                 GettingDaMapBack();
+                return endingGame;
             }
         }
         private bool DaFileChecker(bool FirstRun)
@@ -100,17 +103,14 @@ namespace DaGame.MapPart
                 File.ReadAllText(dafileMapPath);
                 FirstRun = false;
                 firstlyRuniny = false;
-                Console.WriteLine("ah shit, here we go again");
             }
             catch (Exception)
             {
                 FirstRun = true;
-                Console.WriteLine("first time");
-                string? u = Console.ReadLine();
             }
             return FirstRun;
         }
-        
+
         private void DaPathChoser()
         {
             Console.WriteLine("Chose a file path(even if you alredy did this)\n   Just create a folder somewhere and grab the path from there");
@@ -141,7 +141,7 @@ namespace DaGame.MapPart
             {
                 PlayerInventory.Add(item);
             }
-            foreach(string item in File.ReadAllLines(daFileEXPPath))
+            foreach (string item in File.ReadAllLines(daFileEXPPath))
             {
                 InventoryBaby.Add(item);
             }
@@ -169,7 +169,7 @@ namespace DaGame.MapPart
                 }
                 i++;
             }
-            
+
         }
         public void UpdatingDaXandYForDaRooms(int xF, int yF)
         {
@@ -208,17 +208,17 @@ namespace DaGame.MapPart
 
             return daWholeSettingsText;
         }
-        private void GrabDificulty()
+        private bool GrabDificulty()
         {
             bool dificultyChosing = true;
             bool endingGame = false;
             while (dificultyChosing)
             {
-                Console.WriteLine("What dificulty are ya chosing?\n\n" +
-                "   Easy(1)\n" +
-                "   Medium(2)\n" +
-                "   Hard(3)\n" +
-                "   Random(random)\n" +
+                Console.WriteLine("What size are ya chosing?\n\n" +
+                "   15x15(1)\n" +
+                "   10x10(2)\n" +
+                "   5x5(3)\n" +
+                "   Custom (custom)\n" +
                 "   Explain(?)\n" +
                 "   End(end)"
                 );
@@ -228,7 +228,7 @@ namespace DaGame.MapPart
                 switch (userInput)
                 {
                     case "1":
-                        daMapSizeX = 15 ;
+                        daMapSizeX = 15;
                         daMapSizeY = 15;
                         dificultyChosing = false;
                         break;
@@ -242,16 +242,16 @@ namespace DaGame.MapPart
                         daMapSizeY = 5;
                         dificultyChosing = false;
                         break;
-                    case "random":
+                    case "custom":
                         RandomDificulty();
                         dificultyChosing = false;
                         break;
                     case "?":
-                        Console.WriteLine("\nBasicly, harder dificulty = more harder enemies, less loot and smaller map" +
-                            "Easy - 15x15 (225 rooms)\n" +
-                            "Medium - 10x10 (100 rooms)\n" +
-                            "Hard - 5x5 (25 rooms)\n" +
-                            "Random - You chose da rooms. Max = 50x50, more rooms may lag this program btw\n" +
+                        Console.WriteLine("\n" +
+                            "1 - 15x15 (225 rooms)\n" +
+                            "2 - 10x10 (100 rooms)\n" +
+                            "3 - 5x5 (25 rooms)\n" +
+                            "Custom  - You chose da rooms. Max = 50x50, more rooms may lag this program btw, not sure tho...\n" +
                             "\nPress enter to continue");
                         string? skip = Console.ReadLine();
                         break;
@@ -272,25 +272,20 @@ namespace DaGame.MapPart
                     {
                         Console.Clear();
                         DaBossPlacer();
-                        
+
                         LoadingDaMaps();
-                        
+                        return true;
+
                     }
                 }
             }
+            return false;
         }
         public void SettingDaPlayerBoxPosition()
         {
             //List<string> ov = new List<string>();
 
             File.AppendAllText(daFileSettingsPath, "4\n");
-            /*
-foreach (var item in File.ReadAllLines(daFileSettingsPath))
-{
-    ov.Add(item);
-}
-Console.WriteLine(ov[0]);
-*/
         }
         private void RandomDificulty()
         {
@@ -326,9 +321,9 @@ Console.WriteLine(ov[0]);
             string daMapText = "";
             daGameSettings += daMapSizeX.ToString() + "\n" + daMapSizeY.ToString() + "\n\n";
 
-            daGameSettings += 0.ToString() + "\n" + 0.ToString() + "\n\n"; // da position of da player in da Map
+            daGameSettings += 0.ToString() + "\n" + 0.ToString() + "\n\n"; // position of player in map
 
-            daGameSettings += 4.ToString() + "\n\n"; // da position of da player in da box, thats da middle btw
+            daGameSettings += 4.ToString() + "\n\n"; // position of player in box, thats in middle btw
 
             File.WriteAllText(dafileMapPath, daMapText);
             File.WriteAllText(daFileSettingsPath, daGameSettings);
@@ -361,51 +356,9 @@ Console.WriteLine(ov[0]);
                         daMapText = "";
                     }
                 }
-
-
-
                 i++;
-
-
             }
-
-            // i = the y's
-            // j = the x's
-            // k = the items
-
-            /*
-                        i = 0;
-                        int h = 0; //h = j, btw
-                        while (i < daMapSizeY)
-                        {
-                            if (h == 15)
-                            {
-                                h = 14;
-                            }
-                            Console.WriteLine(i + "Y");
-                            foreach (var item in DaMap[i][h])
-                            {
-                                if (item == "Boss")
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine($"x:{h + 1}");
-                                    Console.WriteLine(item);
-                                    Console.ResetColor();
-                                }
-                                else
-                                {
-                                    Console.WriteLine(h + 1);
-                                    Console.WriteLine(item);
-                                }
-                                h++;
-
-                            }
-                            h = 0; i++;
-
-                        }
-            */
         }
-
 
         public void RandomItemGenerator()
         {
@@ -446,11 +399,11 @@ Console.WriteLine(ov[0]);
             List<string> fan = new List<string>();
             int daStarterPosition = 8;
             int currentPosition = 0;
-            int daEndPosition = 10;
+            int daEndPosition = 11;
 
             foreach (string item in File.ReadAllLines(daFileSettingsPath))
             {
-                if (currentPosition >= daStarterPosition || currentPosition != daEndPosition)
+                if (currentPosition >= daStarterPosition && currentPosition <= daEndPosition)
                 {
                     fan.Add(item.ToString());
                     currentPosition++;
@@ -466,93 +419,78 @@ Console.WriteLine(ov[0]);
         public List<string> DaBossPlacer()
         {
             List<string> fan = new List<string>();
-
-            daBossY = random.Next(0, daMapSizeY - 1);
-
-            if (daBossY == daMapSizeY - 1)
+            if (daMapSizeY != 0)
             {
-                daBossX = random.Next(0, daMapSizeX - 1);
-            }
-            else if (daBossY == 0)
-            {
-                daBossX = random.Next(0, daMapSizeX - 1);
-            }
-            else
-            {
-                daBossX = random.Next(0, 1);
+                daBossY = random.Next(0, daMapSizeY - 1);
 
-                if (daBossX == 1)
+                if (daBossY == daMapSizeY - 1)
                 {
-                    daBossX = daMapSizeX - 1;
-                }
-            }
-
-            fan.Add(daBossY.ToString());
-            fan.Add(daBossX.ToString());
-            /*
-            if (daBossY == 0)
-            {
-                fan.Add("down");
-            }
-            else if (daBossY == daMapSizeX - 1)
-            {
-                fan.Add("up");
-            }
-
-            if (daBossX == 0)
-            {
-                fan.Add("right");
-            }
-            else if (daBossX == daMapSizeY - 1)
-            {
-                fan.Add("left");
-            }
-            */
-            if (daBossY == daMapSizeY - 1 && daBossX == daMapSizeX - 1)
-            {
-                fan.Add("up");
-                fan.Add("left");
-            }
-            else if (daBossY == 0 && daBossX == 0)
-            {
-                fan.Add("down");
-                fan.Add("right");
-            }
-            else if (daBossY == daMapSizeY - 1 && daBossX == 0)
-            {
-                fan.Add("up");
-                fan.Add("right");
-            }
-            else if (daBossY == 0 && daBossX == daMapSizeX - 1)
-            {
-                fan.Add("down");
-                fan.Add("up");
-            }
-            else
-            {
-                if (daBossX == 0)
-                {
-                    fan.Add("right");
-                }
-                else if (daBossX == daMapSizeX - 1)
-                {
-                    fan.Add("left");
+                    daBossX = random.Next(0, daMapSizeX - 1);
                 }
                 else if (daBossY == 0)
                 {
-                    fan.Add("down");
+                    daBossX = random.Next(0, daMapSizeX - 1);
                 }
-                else if (daBossY == daMapSizeY - 1)
+                else
                 {
+                    daBossX = random.Next(0, 1);
+
+                    if (daBossX == 1)
+                    {
+                        daBossX = daMapSizeX - 1;
+                    }
+                }
+
+                fan.Add(daBossY.ToString());
+                fan.Add(daBossX.ToString());
+                
+                if (daBossY == daMapSizeY - 1 && daBossX == daMapSizeX - 1)
+                {
+                    fan.Add("up");
+                    fan.Add("left");
+                }
+                else if (daBossY == 0 && daBossX == 0)
+                {
+                    fan.Add("down");
+                    fan.Add("right");
+                }
+                else if (daBossY == daMapSizeY - 1 && daBossX == 0)
+                {
+                    fan.Add("up");
+                    fan.Add("right");
+                }
+                else if (daBossY == 0 && daBossX == daMapSizeX - 1)
+                {
+                    fan.Add("down");
                     fan.Add("up");
                 }
                 else
                 {
-                    Console.WriteLine("Cant get da direcion");
+                    if (daBossX == 0)
+                    {
+                        fan.Add("right");
+                    }
+                    else if (daBossX == daMapSizeX - 1)
+                    {
+                        fan.Add("left");
+                    }
+                    else if (daBossY == 0)
+                    {
+                        fan.Add("down");
+                    }
+                    else if (daBossY == daMapSizeY - 1)
+                    {
+                        fan.Add("up");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cant get da direcion");
+                    }
                 }
-            }
-        // the: up, down, left and right things are inverted... so yeah, just saying
+                // the: up, down, left and right things are inverted... so yeah, just saying
 
+                return fan;
+            }
             return fan;
         }
         public void DaMapSaver(int xX, int yY, int PML)
@@ -566,23 +504,16 @@ Console.WriteLine(ov[0]);
         }
         private void DaMapFileSaver(int PML)
         {
-            //1. done
-            //2. done
-            //3. done
-
-            // dafileMapPath
-            // daMapSizeX
             DaMapBoxUpdater(PML);
             DaMapUpdater();
-
         }
-        public  void gettingdaBoxPlayerPosition(int PlayerMonsterLocation)
+        public void gettingdaBoxPlayerPosition(int PlayerMonsterLocation)
         {
             DaMapBoxUpdater(PlayerMonsterLocation);
         }
         private void DaMapBoxUpdater(int PML)
         {
-            List<string> f  = new List<string>();
+            List<string> f = new List<string>();
             List<string> newf = new List<string>();
 
             int i = 0;
@@ -603,14 +534,14 @@ Console.WriteLine(ov[0]);
                 }
             }
             else
-           {
+            {
                 foreach (string list in f)
                 {
                     newf.Add(list + "\n");
                 }
             }
             i = 0;
-                File.WriteAllText(daFileSettingsPath, string.Empty);
+            File.WriteAllText(daFileSettingsPath, string.Empty);
             foreach (string list in newf)
             {
                 File.AppendAllText(daFileSettingsPath, newf[i]);
@@ -654,10 +585,9 @@ Console.WriteLine(ov[0]);
                 File.AppendAllText(daFileInventoryPath, item + "\n");
             }
         }
-        //PlayerExp = 0;
-        //PlayerLEVEL = 0;
         public void GettingDaExpAndLevel()
         {
+
             List<string> f = new List<string>();
             foreach (string item in File.ReadAllLines(daFileEXPPath))
             {
@@ -665,24 +595,32 @@ Console.WriteLine(ov[0]);
             }
             PlayerExp = int.Parse(f[0]);
             PlayerLEVEL = int.Parse(f[1]);
+
         }
         public void GettingDaInventory()
         {
+
             List<string> f = new List<string>();
             foreach (string item in File.ReadAllLines(daFileInventoryPath))
             {
                 f.Add(item);
             }
             PlayerPlayerInventory = f.ToList();
+
+
         }
-        public void SettingDaPlayerStats(int playerHp)
+        public void SettingDaPlayerStats(decimal playerHp)
         {
             File.WriteAllText(daFilePlayerStatsPath, playerHp.ToString());
         }
         public void GettingDaPlayerStats()
         {
+
+
             string f = File.ReadAllText(daFilePlayerStatsPath);
-            PlayerHP = int.Parse(f);
+            PlayerHP = decimal.Parse(f);
+
+
         }
     }
 }

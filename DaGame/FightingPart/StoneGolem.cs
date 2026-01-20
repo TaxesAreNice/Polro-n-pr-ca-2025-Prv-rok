@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Polročná_práca_2025_Prvý_rok.FightingPart
 {
-    internal class StoneGolem : Monster
+    internal class StoneGolem : Orc
     {
-        public StoneGolem(int _HP, int _DMG) : base(_HP, _DMG)
-        {
-            _HP = 500;
-            _DMG = 1;
-        }
+        protected override int damage { get; set; } = 8;
+        protected override decimal health { get; set; } = 125;
     }
 }
