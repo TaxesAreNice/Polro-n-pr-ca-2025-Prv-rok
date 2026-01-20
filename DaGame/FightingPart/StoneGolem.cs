@@ -9,6 +9,6 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
     internal class StoneGolem : Orc
     {
         protected override int damage { get; set; } = 8;
-        protected override int health { get; set; } = 125;
+        protected override decimal health { get; set; } = 125;
     }
 }

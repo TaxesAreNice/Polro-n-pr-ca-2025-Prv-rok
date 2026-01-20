@@ -43,9 +43,9 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
         private bool offSet = false;
 
-        private string upperBox = "■-------■"; // 1 + 7 + 1, 4 = center
+        private string upperBox = "■-------■";
 
-        private string middleBox = "|"; // meowino fofinino fiaovino... don't ask, bro
+        private string middleBox = "|";
 
         private bool moving = true;
 
@@ -58,6 +58,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
         private int daMapPositionXBackup = 0;
         private int daMapPositionYBackup = 0;
 
+        private bool ignoringTheExes = false;
 
         private int x = 14;
         private int y = 7;
@@ -68,11 +69,8 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
         private string userInput = "";
 
-        private int PlayerHp = 100;
+        private decimal PlayerHp = 100;
         private int PlayerDamage = 10;
-
-        //x{xU + 4 - daMapPositionX},y{yU + i - daMapPositionY}" just in case, yk?
-
 
         public void DaVisualMap()
         {
@@ -89,7 +87,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
 
 
-            if (starterPlayer) //mapInAMap.x != 0 && mapInAMap.y != 0
+            if (starterPlayer)
             {
                 mapInAMap.x -= 1;
                 PlayerMonsterLocation = mapInAMap.PlayerBoxPosition;
@@ -118,8 +116,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 starterPlayer = false;
             }
             else
-            {
-                //// it goes here
+            {           
                 mapInAMap.BossReader();
                 mapInAMap.BossSpawning(starterPlayer);
                 starterPlayer = true;
@@ -168,15 +165,11 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             x += daMapPositionX;
             y += daMapPositionY;
         }
-        private void gettingDaPlayerBoxPosition()
-        {
-            // here we'll do the updating da playerBoxLocation thing
-        }
         private void DaMapThing()
         {
             Console.SetCursorPosition(xx, yy);
             {
-                Console.WriteLine($"x{x},y{y}, ? = settings");
+                Console.WriteLine("? = settings, e = inventory");
             }
 
             while (moving)
@@ -269,8 +262,16 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 else if (userInput == "e")
                 {
                     Monsterengine.currentInventory = currentInventory;
+                    Monsterengine.PlayerHp = PlayerHp;
+
                     Monsterengine.Inventory();
                     Console.Clear();
+
+                    PlayerHp = Monsterengine.PlayerHp;
+                    currentInventory = Monsterengine.currentInventory;
+
+                    mapInAMap.UpdatingDaInventory(currentInventory);
+                    mapInAMap.SettingDaCurentPlayerStatus(PlayerHp);
                 }
                 else
                 {
@@ -281,7 +282,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
                 Console.SetCursorPosition(xx, yy);
                 {
-                    Console.WriteLine($"x{x},y{y}, ? = settings");
+                    Console.WriteLine("? = settings, e = inventory");
                 }
                 foreach (var item in daRoom)
                 { Console.WriteLine(item); }
@@ -365,6 +366,15 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             }
 
         }
+        private void Bossinifafiny()
+        {
+            currentItems.Clear();
+            for (int i = 0; i < 9; i++)
+            {
+                currentItems.Add("x");
+            }
+            UpdatingDaXandYOfDaRoom();
+        }
         private void CheckingBeforeCheckingEadges()
         {
             string direction = "";
@@ -373,14 +383,14 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             if (currentItems.Contains("Boss"))
             {
                 bossHere = true;
+
             }
 
             if (userInput == "a" && x - daMapPositionX == 4 && y - daMapPositionY == 7)
             {
                 if (bossHere && currentItems.Contains("right"))
                 {
-                    bossFight.RunBossFight();
-                    moving = false;
+                    GoingToTheBossRoom();
                 }
                 else
                 {
@@ -388,31 +398,28 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     direction = "left";
                     UpdatingDaXandYOfDaRoom();
                     Converting2List(direction);
-                    Console.WriteLine("left");
                 }
             }
             else if (userInput == "d" && x - daMapPositionX == 24 && y - daMapPositionY == 7)
             {
                 if (bossHere && currentItems.Contains("left"))
                 {
-                    bossFight.RunBossFight();
-                    moving = false;
+                    GoingToTheBossRoom();;
                 }
                 else
                 {
+
                     SettingThePlayerRoomValue();
                     direction = "right";
                     Converting2List(direction);
                     UpdatingDaXandYOfDaRoom();
-                    Console.WriteLine("right");
                 }
             }
             else if (userInput == "w" && y - daMapPositionY == 2 && x - daMapPositionX == 14)
             {
                 if (bossHere && currentItems.Contains("down"))
                 {
-                    bossFight.RunBossFight();
-                    moving = false;
+                    GoingToTheBossRoom();
                 }
                 else
                 {
@@ -420,15 +427,13 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     direction = "up";
                     Converting2List(direction);
                     UpdatingDaXandYOfDaRoom();
-                    Console.WriteLine("up");
                 }
             }
             else if (userInput == "s" && y - daMapPositionY == 12 && x - daMapPositionX == 14)
             {
                 if (bossHere && currentItems.Contains("up"))
                 {
-                    bossFight.RunBossFight();
-                    moving = false;
+                    GoingToTheBossRoom();
                 }
                 else
                 {
@@ -436,13 +441,80 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     direction = "down";
                     Converting2List(direction);
                     UpdatingDaXandYOfDaRoom();
-
-                    Console.WriteLine("down");
                 }
             }
             else
             {
                 CheckingEadges();
+            }
+        }
+        private void GoingToTheBossRoom()
+        {
+            int endCaser = 0;
+            offSet = true;
+            starterPlayer = false;
+
+            if (PlayerMonsterLocation == 1)
+            {
+                endCaser = 1;
+            }
+            else if (PlayerMonsterLocation == 3)
+            {
+                endCaser = 2;
+            }
+            else if (PlayerMonsterLocation == 5)
+            {
+                endCaser = 3;
+            }
+            else if (PlayerMonsterLocation == 7)
+            {
+                endCaser = 4;
+            }
+
+
+            SpawningDaPlayer();
+            bool theBossFightHasStarted = bossFight.RunBossFight();
+            if (theBossFightHasStarted)
+            {
+                mapInAMap.x -= 1;
+                Converting2List("right");
+
+                currentItems.Clear();
+                currentItems.Add("Boss");
+                PlayerMonsterLocation = 0;
+                ignoringTheExes = true;
+
+                CheckingDaMovment(PlayerMonsterLocation);
+                if (endCaser == 1)
+                {
+                    PlayerMonsterLocation = 1;
+                    x = 14 + daMapPositionX;
+                    y = 2 + daMapPositionY;
+                }
+                else if (endCaser == 2)
+                {
+                    PlayerMonsterLocation = 3;
+                    x = 4 + daMapPositionX;
+                    y = 7 + daMapPositionY;
+                }
+                else if (endCaser == 3)
+                {
+                    PlayerMonsterLocation = 5;
+                    x = 24 + daMapPositionX;
+                    y = 7 + daMapPositionY;
+                }
+                else if (endCaser == 4)
+                {
+                    PlayerMonsterLocation = 7;
+                    x = 14 + daMapPositionX;
+                    y = 12 + daMapPositionY;
+                }
+
+                ignoringTheExes = false;
+                mapInAMap.x -= 1;
+
+                Converting2List("right");
+                UpdatingDaXandYOfDaRoom();
             }
         }
         private void UpdatingDaXandYOfDaRoom()
@@ -452,10 +524,34 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
         private List<string> Converting2List(string direction)
         {
+
             var a = mapInAMap.CheckingTheRoomMovment(direction);
             foreach (var item in a)
             {
                 currentItems.Add(item);
+            }
+            if (currentItems.Contains("Boss"))
+            {
+                string f = "";
+                if (currentItems.Contains("up"))
+                {
+                    f = "up";
+                }
+                else if (currentItems.Contains("down"))
+                {
+                    f = "down";
+                }
+                else if (currentItems.Contains("left"))
+                {
+                    f = "left";
+                }
+                else if (currentItems.Contains("right"))
+                {
+                    f = "right";
+                }
+                Bossinifafiny();
+                currentItems.Add("Boss");
+                currentItems.Add(f);
             }
             return currentItems;
         }
@@ -578,7 +674,6 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 }
                 else if (userSettingsInput == "admin")
                 {
-                    //add a new loop with a new gui or something...
                     mapInAMap.BossChecking();
                     settingLoop = false;
                     string? adminInput = Console.ReadLine();
@@ -612,10 +707,10 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                 }
                 else if (currentItems[j + jj * 3] == "Zombie")
                 {
-                    Console.SetCursorPosition(xU + 4, yU + i - 1);
+                    Console.SetCursorPosition(xU + 3, yU + i - 1);
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.WriteLine(@"o");
+                        Console.WriteLine(@" o ");
                     }
                     Console.SetCursorPosition(xU + 3, yU + i);
                     {
@@ -707,18 +802,49 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
             if (currentItems.Count == 0)
             {
             }
-            else if (currentItems[PML] == "x")
+            else if (currentItems[PML] == "x" && !ignoringTheExes)
             {
             }
             else if (currentItems[PML] == "Item")
             {
-                Console.WriteLine("You found an item!");
-                currentItems[PML] = "x";
-                mapInAMap.DaMapSaver(PML);
-            }
-            else if (PML == 4)
-            {
-                Console.WriteLine("x");
+                if (currentInventory.Count <= 12)
+                {
+                    Random rand = new Random();
+                    int itemPicer = rand.Next(0, 4);
+                    if (itemPicer == 0)
+                    {
+                        currentInventory.Add("Spagettie");
+                        Console.WriteLine("You found some Spagettie!");
+                    }
+                    else if (itemPicer == 1)
+                    {
+                        currentInventory.Add("Golden chicken");
+                        Console.WriteLine("You found a Golden chicken!");
+                    }
+                    else if (itemPicer == 2)
+                    {
+                        currentInventory.Add("Chicken");
+                        Console.WriteLine("You found a Chicken");
+                    }
+                    else if (itemPicer == 3)
+                    {
+                        currentInventory.Add("funny tasting candy");
+                        Console.WriteLine("You found some funny tasting candy");
+                    }
+                    else
+                    {
+                        Console.WriteLine("You found nothin'");
+                    }
+
+                    currentItems[PML] = "x";
+                    mapInAMap.DaMapSaver(PML);
+                    mapInAMap.UpdatingDaInventory(currentInventory);
+                }
+                else
+                {
+                    Console.WriteLine("Yo inventory's full");
+                }
+
             }
             else
             {
@@ -726,7 +852,7 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
 
                 Monsterengine.PlayerHp = PlayerHp;
 
-                Monsterengine.GettingDaMonster(daMonster, currentInventory, CurrentLevel);
+                Monsterengine.GettingMonster(daMonster, currentInventory, CurrentLevel);
                 Monsterengine.StartFight();
 
                 currentInventory = Monsterengine.currentInventory;
@@ -743,7 +869,6 @@ namespace Polročná_práca_2025_Prvý_rok.MapPart
                     string? lastWords = Console.ReadLine();
                 }
 
-                //banana
                 SettingDaPlayerLevel();
                 mapInAMap.UpdatingDaLevelAndExp(CurrentLevel, currentEXP);
                 mapInAMap.UpdatingDaInventory(currentInventory);

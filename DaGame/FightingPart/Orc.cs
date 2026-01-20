@@ -8,13 +8,12 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
 {
     internal class Orc
     {
-
         protected virtual int damage { get; set; } = 12;
-        protected virtual int health { get; set; } = 80;
+        protected virtual decimal health { get; set; } = 80;
 
         public void SendingStats(engine fightEngine)
         {
-            fightEngine.CheckingDaMonsterStats(damage, health);
+            fightEngine.CheckingMonsterStats(damage, health);
         }
     }
 }

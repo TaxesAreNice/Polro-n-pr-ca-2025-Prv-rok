@@ -9,9 +9,9 @@ MapEngine mapEngine = new MapEngine();
 
 VisualMap visualMap = new VisualMap(mapEngine);
 //engine.Play(player, monster);
+bool itsDead = false;
 
-mapEngine.Run();
-visualMap.DaVisualMap();
+itsDead = mapEngine.Run();
 
-
-
+if (itsDead!)
+{ visualMap.DaVisualMap(); }

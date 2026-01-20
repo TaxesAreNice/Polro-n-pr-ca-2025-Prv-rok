@@ -9,7 +9,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
     internal class Zombie : Orc
     {
         protected override int damage { get; set; } = 5;
-        protected override int health { get; set; } = 75;
+        protected override decimal health { get; set; } = 75;
 
     }
 }

@@ -2,6 +2,7 @@
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using DaGame.FightingPart;
 using Polročná_práca_2025_Prvý_rok.MapPart;
 using static System.Formats.Asn1.AsnWriter;
 
@@ -16,29 +17,32 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
         Zombie zombie = new Zombie();
         Orc orc = new Orc();
         StoneGolem stoneGolem = new StoneGolem();
+        BossFight bossFight = new BossFight();
 
         public bool endGame = false;
 
-        public int PlayerHp = 100;
-        private int PlayerArmorProtection = 0;
-        private int PlayerDamage = 10;
+        private bool playerDead = false;
 
-        private int MonsterHp = 100;
-        private int MonseterDamage = 10;
+        public decimal PlayerHp = 100;
+        private decimal PlayerArmorProtection = 0;
+        private decimal PlayerDamage = 10;
 
-        private bool quitedDaInventory = false;
+        private decimal MonsterHp = 100;
+        private decimal MonseterDamage = 10;
 
-        private string daMonster = "";
-        public void GettingDaMonster(string currentininyMonstertininy, List<string> playersItems, int lvl)
+        private bool leaveInventory = false;
+
+        private string Monster = "";
+        public void GettingMonster(string currentMonster, List<string> playersItems, int lvl)
         {
-            daMonster = currentininyMonstertininy;
+            Monster = currentMonster;
             playersItems = playersItems.ToList();
 
             currentInventory = playersItems;
 
             if (currentInventory.Contains("Iron sword"))
             {
-                PlayerDamage = 50;
+                PlayerDamage = 25;
             }
             else if (currentInventory.Contains("leather armor"))
             {
@@ -50,23 +54,28 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             }
             else if (currentInventory.Contains("Stone sword"))
             {
-                PlayerDamage = 25;
+                PlayerDamage = 15;
             }
 
-            if (daMonster == "Zombie")
+            if (Monster == "Zombie")
             {
                 zombie.SendingStats(this);
             }
-            else if (daMonster == "Orc")
+            else if (Monster == "Orc")
             {
                 orc.SendingStats(this);
             }
-            else if (daMonster == "StoneGolem")
+            else if (Monster == "StoneGolem")
             {
                 stoneGolem.SendingStats(this);
             }
-            PlayerHp += lvl;
-            if (lvl! > 1)
+            else if (Monster == "Boss")
+            {
+                bossFight.SendingStats(this);
+            }
+
+            PlayerHp += lvl * 2;
+            if (lvl > 1)
             {
                 PlayerDamage = PlayerDamage * (lvl / 2);
             }
@@ -74,41 +83,67 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
         public void StartFight()
         {
             Console.Clear();
-            Console.WriteLine("You've started a fight with" + daMonster + "\n   Press enter to start the fight");
+            Console.WriteLine("You've started a fight with " + Monster + "\n   Press enter to start the fight");
 
             string? userInput = Console.ReadLine();
 
-            TheFight();
+            Fight();
 
             AfterFight();
         }
-        public void CheckingDaMonsterStats(int damage, int hp)
+        public void CheckingMonsterStats(int damage, decimal hp)
         {
             MonsterHp = hp;
             MonseterDamage = damage;
         }
 
-        private void TheFight()
+        private bool fight = true;
+        private void Fight()
         {
-            CheckingPlayerOptions();
+            while (fight)
+            {
+                CheckingPlayerOptions();
+            }
+            fight = true;
         }
-        private void RenderingTheMonster()
+        private void RenderingMonster()
         {
             int XX = 42;
             int YY = 15;
 
-            if (daMonster == "Zombie")
+            if (Monster == "Zombie")
             {
                 RenderingZombie(XX, YY);
             }
-            else if (daMonster == "Orc")
+            else if (Monster == "Orc")
             {
                 RenderingOrc(XX, YY);
             }
-            else if (daMonster == "StoneGolem")
+            else if (Monster == "StoneGolem")
             {
                 RenderingStoneGolem(XX, YY);
             }
+            else if (Monster == "Boss")
+            {
+                RenderingBoss(XX, YY);
+            }
+        }
+        private void RenderingBoss(int XX, int YY)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.SetCursorPosition(XX - 3, YY);
+            {
+                Console.WriteLine(@"(.\_/.)");
+            }
+            Console.SetCursorPosition(XX - 2, YY + 1);
+            {
+                Console.WriteLine(@"/|_|\");
+            }
+            Console.SetCursorPosition(XX - 2, YY + 2);
+            {
+                Console.WriteLine(@"/|||\");
+            }
+            Console.ResetColor();
         }
         private void RenderingZombie(int XX, int YY)
         {
@@ -161,20 +196,20 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             }
             Console.ResetColor();
         }
-        private void RenderingThePlayerOptions()
+        private void RenderingPlayerOptions()
         {
             int xX = 30;
             int yY = 20;
 
-            RenderingTheUperAndLowerPartInPlayerChoise(xX, yY);
+            RenderingUperAndLowerPartInPlayerChoise(xX, yY);
             yY++;
-            RenderingTheMiddlePartInPlayerChoise(xX, yY);
+            RenderingMiddlePartInPlayerChoise(xX, yY);
             yY += 3;
-            RenderingTheUperAndLowerPartInPlayerChoise(xX, yY);
+            RenderingUperAndLowerPartInPlayerChoise(xX, yY);
         }
 
 
-        private void RenderingTheMiddlePartInPlayerChoise(int xX, int yY)
+        private void RenderingMiddlePartInPlayerChoise(int xX, int yY)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -193,7 +228,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             }
 
         }
-        private void RenderingTheUperAndLowerPartInPlayerChoise(int xX, int yY)
+        private void RenderingUperAndLowerPartInPlayerChoise(int xX, int yY)
         {
             Console.SetCursorPosition(xX, yY);
             {
@@ -228,20 +263,20 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
         private void CheckingPlayerOptions()
         {
             int x = 0;
-            bool playingPickingOption = true;
+            bool inventoryPickingOption = true;
 
             Console.Clear();
 
-            RenderingTheMonster();
-            RenderingThePlayerOptions();
+            RenderingMonster();
+            RenderingPlayerOptions();
 
             Console.ForegroundColor = ConsoleColor.Red;
 
-            Console.SetCursorPosition(36, 22); // Change the position here
+            Console.SetCursorPosition(36, 22);
             {
                 Console.WriteLine("o");
             }
-            while (playingPickingOption)
+            while (inventoryPickingOption)
             {
 
                 string userInput = Console.ReadKey(true).KeyChar.ToString();
@@ -252,14 +287,14 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     if (x == 0)
                     {
                         x++;
-                        Console.SetCursorPosition(48, 22); // Change the position here
+                        Console.SetCursorPosition(48, 22);
                         {
                             Console.WriteLine("o");
                         }
                     }
                     else
                     {
-                        Console.SetCursorPosition(48, 22); // Change the position here
+                        Console.SetCursorPosition(48, 22);
                         {
                             Console.WriteLine("o");
                         }
@@ -271,14 +306,14 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     if (x == 1)
                     {
                         x--;
-                        Console.SetCursorPosition(36, 22); // And here too
+                        Console.SetCursorPosition(36, 22);
                         {
                             Console.WriteLine("o");
                         }
                     }
                     else
                     {
-                        Console.SetCursorPosition(36, 22); // And here too
+                        Console.SetCursorPosition(36, 22);
                         {
                             Console.WriteLine("o");
                         }
@@ -287,10 +322,10 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                 }
                 else
                 {
-                    playingPickingOption = false;
+                    inventoryPickingOption = false;
                     Console.ResetColor();
                     Console.Clear();
-                    RenderingTheMonster();
+                    RenderingMonster();
 
                     if (x == 0)
                     {
@@ -300,51 +335,49 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     {
                         Console.Clear();
                         Inventory();
-                        if (!quitedDaInventory)
+                        if (!leaveInventory)
                         {
                             Console.Clear();
-                            RenderingTheMonster();
+                            RenderingMonster();
                             MonsterAttack();
-                            // Inventory
                         }
                         else
                         {
-                            quitedDaInventory = false;
-                            TheFight();
+                            leaveInventory = false;
                         }
                     }
                     else
                     {
-                        playingPickingOption = true;
+                        inventoryPickingOption = true;
                     }
 
                 }
-                RenderingTheMonster();
-                RenderingThePlayerOptions();
+                RenderingMonster();
+                RenderingPlayerOptions();
                 Console.ForegroundColor = ConsoleColor.Red;
             }
             Console.Clear();
         }
         private void CreatingInventory()
         {
-            int daX = 30;
-            int daY = 7;
+            int X = 30;
+            int Y = 7;
 
-            TheOInventoryPart(daX, daY);
-            daY += 1;
+            TheOInventoryPart(X, Y);
+            Y += 1;
 
             for (int i = 0; i < 3; i++)
             {
-                TheLineInventoryPart(daX, daY);
-                daY += 2;
-                TheOInventoryPart(daX, daY);
-                daY += 1;
+                TheLineInventoryPart(X, Y);
+                Y += 2;
+                TheOInventoryPart(X, Y);
+                Y += 1;
             }
 
-            daVPart(daX, daY);
-            daY++;
+            TheVPart(X, Y);
+            Y++;
 
-            daVUPart(daX, daY);
+            TheUPart(X, Y);
 
             spawingDaInventoryItems();
         }
@@ -380,7 +413,6 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                 {
                     Console.ForegroundColor = ConsoleColor.DarkMagenta;
                     Console.WriteLine("=▄=");
-                    Console.WriteLine("o");
                 }
             }
             else if (currentInventory[order] == "Spagettie")
@@ -388,7 +420,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                 Console.SetCursorPosition(daXf - 1, daYf);
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("=");
+                    Console.WriteLine("-=-");
                 }
             }
             else if (currentInventory[order] == "Chicken")
@@ -399,7 +431,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     Console.WriteLine("O-c");
                 }
             }
-            else if (currentInventory[order] == "funny tasing candy")
+            else if (currentInventory[order] == "funny tasting candy")
             {
                 Console.SetCursorPosition(daXf - 1, daYf);
                 {
@@ -419,7 +451,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             {
                 Console.SetCursorPosition(daXf - 1, daYf);
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine("=▄=");
                 }
             }
@@ -427,7 +459,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             {
                 Console.SetCursorPosition(daXf - 1, daYf);
                 {
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
                     Console.WriteLine("+--");
                 }
             }
@@ -446,105 +478,109 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             Console.ResetColor();
         }
 
-        private void daVPart(int daXx, int daYy)
+        private void TheVPart(int Xx, int Yy)
         {
-            Console.SetCursorPosition(daXx, daYy);
+            Console.SetCursorPosition(Xx, Yy);
             {
                 Console.WriteLine("|");
             }
-            daXx += 36;
+            Xx += 36;
 
             for (int i = 0; i < 2; i++)
             {
-                Console.SetCursorPosition(daXx, daYy);
+                Console.SetCursorPosition(Xx, Yy);
                 {
                     Console.WriteLine("|");
                 }
-                daXx += 12;
+                Xx += 12;
             }
         }
-        private void daVUPart(int daXx, int daYy)
+        private void TheUPart(int Xx, int Yy)
         {
-            Console.SetCursorPosition(daXx, daYy);
+            Console.SetCursorPosition(Xx, Yy);
             {
                 Console.WriteLine("o------------------------------------------------");
             }
-            daXx += 36;
+            Xx += 36;
 
 
-            Console.SetCursorPosition(daXx, daYy);
+            Console.SetCursorPosition(Xx, Yy);
             {
                 Console.WriteLine("o-----------");
             }
-            daXx += 12;
-            Console.SetCursorPosition(daXx, daYy);
+            Xx += 12;
+            Console.SetCursorPosition(Xx, Yy);
             {
                 Console.WriteLine("o");
             }
         }
-        private void TheOInventoryPart(int daXx, int daYy)
+        private void TheOInventoryPart(int Xx, int Yy)
         {
-            int daX = daXx;
-            int daY = daYy;
-            int daExer = 0;
+            int X = Xx;
+            int Y = Yy;
+            int Exer = 0;
             void TheOPart()
             {
-                Console.SetCursorPosition(daX + daExer, daY);
+                Console.SetCursorPosition(X + Exer, Y);
                 {
                     Console.WriteLine("o");
                 }
             }
             void TheLinePart()
             {
-                Console.SetCursorPosition(daX + daExer, daY);
+                Console.SetCursorPosition(X + Exer, Y);
                 {
-                    Console.WriteLine("-----------"); // 11 dashes
+                    Console.WriteLine("-----------");
                 }
             }
 
             TheOPart();
-            daX++;
+            X++;
             for (int i = 0; i < 4; i++)
             {
                 TheLinePart();
-                daExer += 11;
+                Exer += 11;
                 TheOPart();
-                daExer += 1;
+                Exer += 1;
             }
 
         }
-        private void TheLineInventoryPart(int daXx, int daYy)
+        private void TheLineInventoryPart(int Xx, int Yy)
         {
-            int daX = daXx;
-            int daY = daYy;
-            int daExer = 0;
+            int X = Xx;
+            int Y = Yy;
+            int Exer = 0;
             for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; j < 5; j++)
                 {
-                    Console.SetCursorPosition(daX + daExer, daY);
+                    Console.SetCursorPosition(X + Exer, Y);
                     {
                         Console.WriteLine("|");
                     }
-                    daExer += 12;
+                    Exer += 12;
                 }
-                daY++;
-                daExer = 0;
+                Y++;
+                Exer = 0;
             }
         }
         public void Inventory()
         {
-            int daXM = 36;
-            int daYM = 9;
+            int XM = 36;
+            int YM = 9;
+
+            List<string> unEatableItems = new List<string>() { };
 
             int o = 0;
             int currentPosition = 0;
             int NumberMinusO = currentPosition = 0;
 
             bool playingInInventory = true;
-            bool usededAnItem = false;
+            bool usedItem = false;
 
-            string UsededItem = "";
+            string UsedItem = "";
+
+            string currentItemPosition = "";
 
             while (playingInInventory)
             {
@@ -569,8 +605,27 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                 }
                 NumberMinusO = currentPosition - o;
 
-                CurrentPositionConverter2XandYANDCursorPrinter(o, daXM, daYM, currentPosition);
+                CurrentPositionConverter2XandYANDCursorPrinter(o, XM, YM, currentPosition);
                 Console.WriteLine($"Your Hp is {PlayerHp}");
+
+                if (currentInventory.Count > currentPosition)
+                {
+                    Console.SetCursorPosition(32, 17);
+                    {
+                        Console.WriteLine($"That's: {currentItemPosition = currentInventory[currentPosition]}");
+                    }
+                    Console.SetCursorPosition(67, 17);
+                    {
+                        if (currentItemPosition == "leather armor" || currentItemPosition == "iron armor" || currentItemPosition == "Iron sword" || currentItemPosition == "Stone sword")
+                        {
+                            Console.WriteLine("its equeped");
+                        }
+                        else
+                        {
+                            Console.WriteLine("'e' to use");
+                        }
+                    }
+                }
 
                 string userInput = Console.ReadKey(true).KeyChar.ToString();
 
@@ -592,39 +647,41 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                 }
                 else if (userInput == "e")
                 {
-                    UsededItem = InventoryItemUsager(currentPosition, usededAnItem);
-                    if (!usededAnItem)
+                    UsedItem = InventoryItemUsager(currentPosition, usedItem);
+                    if (!usedItem)
                     {
-                        if (UsededItem == "" || UsededItem == "leather armor" || UsededItem == "iron armor" || UsededItem == "Iron sword" || UsededItem == "Stone sword")
+                        if (UsedItem == "" || UsedItem == "leather armor" || UsedItem == "iron armor" || UsedItem == "Iron sword" || UsedItem == "Stone sword")
                         {
-                            usededAnItem = false;
+                            usedItem = false;
                         }
                         else
                         {
-                            usededAnItem = true;
+                            usedItem = true;
                         }
                     }
                 }
                 else if (userInput == "q")
                 {
-                    if (!usededAnItem)
+                    if (!usedItem)
                     {
-                        quitedDaInventory = true;
+                        leaveInventory = true;
                     }
                     playingInInventory = false;
                 }
                 else
                 {
-                    Console.WriteLine("fafafela");
+                    Console.WriteLine("error");
                 }
+
+
             }
         }
-        private string InventoryItemUsager(int currentPosition, bool usededAnItem)
+        private string InventoryItemUsager(int currentPosition, bool usedAnItem)
         {
             if (currentInventory.Count > currentPosition)
             {
-                string daItem = currentInventory[currentPosition];
-                if (daItem == "Spagettie")
+                string Item = currentInventory[currentPosition];
+                if (Item == "Spagettie")
                 {
                     PlayerHp += 20;
                     if (PlayerHp > 100)
@@ -633,7 +690,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     }
                     currentInventory.Remove("Spagettie");
                 }
-                else if (daItem == "Chicken")
+                else if (Item == "Chicken")
                 {
                     PlayerHp += 35;
                     if (PlayerHp > 100)
@@ -642,7 +699,7 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     }
                     currentInventory.Remove("Chicken");
                 }
-                else if (daItem == "funny tasing candy")
+                else if (Item == "funny tasting candy")
                 {
                     Random random = new Random();
                     int daRandomNumber = random.Next(-25, 50);
@@ -656,9 +713,9 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     {
                         PlayerHp = 1;
                     }
-                    currentInventory.Remove("funny tasing candy");
+                    currentInventory.Remove("funny tasting candy");
                 }
-                else if (daItem == "Golden chicken")
+                else if (Item == "Golden chicken")
                 {
                     PlayerHp += 50;
                     if (PlayerHp > 100)
@@ -667,14 +724,14 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                     }
                     currentInventory.Remove("Golden chicken");
                 }
-                return daItem;
+                return Item;
             }
             return "";
         }
-        private void CurrentPositionConverter2XandYANDCursorPrinter(int o, int daXM, int daYM, int currentPosition)
+        private void CurrentPositionConverter2XandYANDCursorPrinter(int o, int XM, int YM, int currentPosition)
         {
-            int xH = ((currentPosition - o) * 12) + daXM;
-            int yH = ((o / 4) * 3) + daYM;
+            int xH = ((currentPosition - o) * 12) + XM;
+            int yH = ((o / 4) * 3) + YM;
             Console.SetCursorPosition(xH, yH);
             {
                 Console.WriteLine("o");
@@ -682,16 +739,25 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
         }
         private void PlayerAttack()
         {
+            bool isBoss = Monster == "Boss";
             MonsterHp -= PlayerDamage;
             if (MonsterHp <= 0)
             {
-                Console.WriteLine("Monster defeated!");
+                if (isBoss)
+                {
+                    Console.WriteLine("You won!!! Game basically ends:) or press enter to continue");
+                }
+                else
+                {
+                    Console.WriteLine("Monster defeated!");
+                }
                 string? userInput = Console.ReadLine();
-                PlayerHp = PlayerHp + 50;
+                PlayerHp = PlayerHp + 35;
                 if (PlayerHp > 100)
                 {
                     PlayerHp = 100;
                 }
+                fight = false;
                 return;
             }
             else
@@ -699,49 +765,77 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                 Console.WriteLine("Player hit the monster, MonsterHp: " + MonsterHp + "\nPress enter to continue");
                 string? userInput = Console.ReadLine();
                 Console.Clear();
-                RenderingTheMonster();
+                RenderingMonster();
                 MonsterAttack();
             }
         }
         private void MonsterAttack()
         {
-            PlayerHp = PlayerHp - (MonseterDamage * ((100 - PlayerArmorProtection)) / 100);
+            bool isBoss = Monster == "Boss";
+
+            if (isBoss)
+            {
+                int num = random.Next(1, 3);
+                if (num != 1)
+                {
+                    Console.WriteLine("Boss missed the player!\nPress enter to continue");
+                    Console.ReadLine();
+                    Console.Clear();
+                    return;
+                }
+            }
+
+            PlayerHp -= (MonseterDamage * (100 - PlayerArmorProtection)) / 100;
+
             if (PlayerHp <= 0)
             {
                 Console.WriteLine("You have been defeated!");
+                fight = false;
+                playerDead = false;
                 return;
-                // make sure to end the game as well
+            }
+
+            if (isBoss)
+            {
+                Console.WriteLine("Boss hit the player, PlayerHp: " + PlayerHp + "\nPress enter to continue");
             }
             else
             {
                 Console.WriteLine("Monster hit the player, PlayerHp: " + PlayerHp + "\nPress enter to continue");
-                string? userInput = Console.ReadLine();
-                Console.Clear();
-                TheFight();
             }
+
+            Console.ReadLine();
+            Console.Clear();
         }
         private void AfterFight()
         {
-            int daNumber = 0;
-            if (daMonster == "Zombie")
+            string currentItemGetter = "";
+            int Number = 0;
+
+            if (Monster == "Zombie")
             {
                 expReturner = 10;
-                daNumber = random.Next(0, 3);
+                Number = random.Next(0, 4);
             }
-            else if (daMonster == "Orc")
+            else if (Monster == "Orc")
             {
                 expReturner = 15;
-                daNumber = random.Next(3, 7);
+                Number = random.Next(3, 8);
             }
-            else if (daMonster == "StoneGolem")
+            else if (Monster == "StoneGolem")
             {
                 expReturner = 20;
-                daNumber = random.Next(3, 8);
+                Number = random.Next(4, 9);
+            }
+            else if (Monster == "Boss")
+            {
+                expReturner = 100;
+                Number = random.Next(7, 9);
             }
             else
             {
                 expReturner = 10;
-                daNumber = random.Next(0, 8);
+                Number = random.Next(0, 8);
             }
 
             if (currentInventory.Count >= 12)
@@ -749,42 +843,50 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
             }
             else
             {
-                if (daNumber == 0)
+                if (Number == 0)
                 {
 
                 }
-                else if (daNumber == 1)
+                else if (Number == 1)
                 {
                     currentInventory.Add("Spagettie");
+                    currentItemGetter = "Spagettie";
                 }
-                else if (daNumber == 2)
+                else if (Number == 2)
                 {
                     currentInventory.Add("Chicken");
+                    currentItemGetter = "Chicken";
                 }
-                else if (daNumber == 3)
+                else if (Number == 3)
                 {
-                    currentInventory.Add("funny tasing candy");
+                    currentInventory.Add("funny tasting candy");
+                    currentItemGetter = "funny tasting candy";
                 }
-                else if (daNumber == 4)
+                else if (Number == 4)
                 {
                     currentInventory.Add("Golden chicken");
+                    currentItemGetter = "Golden chicken";
                 }
-                else if (daNumber == 5)
+                else if (Number == 5)
                 {
-                    if (currentInventory.Contains("leather armor") && currentInventory.Count != 12)
+                    if (currentInventory.Contains("leather armor") || currentInventory.Contains("iron armor"))
                     {
                         currentInventory.Add("Chicken");
+                        currentItemGetter = "Chicken";
                     }
                     else
                     {
                         currentInventory.Add("leather armor");
+                        currentItemGetter = "leather armor";
+
                     }
                 }
-                else if (daNumber == 6)
+                else if (Number == 6)
                 {
                     if (currentInventory.Contains("iron armor"))
                     {
                         currentInventory.Add("Golden chicken");
+                        currentItemGetter = "Golden chicken";
                     }
                     else
                     {
@@ -792,25 +894,34 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                         {
                             currentInventory.Remove("leather armor");
                             currentInventory.Add("iron armor");
+                            currentItemGetter = "iron armor";
+                        }
+                        else
+                        {
+                            currentInventory.Add("iron armor");
+                            currentItemGetter = "iron armor";
                         }
                     }
                 }
-                else if (daNumber == 7)
+                else if (Number == 7)
                 {
-                    if (currentInventory.Contains("Stone sword"))
+                    if (currentInventory.Contains("Stone sword") || currentInventory.Contains("Iron sword"))
                     {
-                        currentInventory.Add("funny tasing candy");
+                        currentInventory.Add("funny tasting candy");
+                        currentItemGetter = "funny tasting candy";
                     }
                     else
                     {
                         currentInventory.Add("Stone sword");
+                        currentItemGetter = "Stone sword";
                     }
                 }
-                else if (daNumber == 8)
+                else if (Number == 8)
                 {
                     if (currentInventory.Contains("Iron sword"))
                     {
                         currentInventory.Add("Spagettie");
+                        currentItemGetter = "Spagettie";
                     }
                     else
                     {
@@ -818,13 +929,30 @@ namespace Polročná_práca_2025_Prvý_rok.FightingPart
                         {
                             currentInventory.Remove("Stone sword");
                             currentInventory.Add("Iron sword");
+                            currentItemGetter = "Iron sword";
+                        }
+                        else
+                        {
+                            currentInventory.Add("Iron sword");
+                            currentItemGetter = "Iron sword";
                         }
                     }
                 }
             }
+
+            Console.ResetColor();
+            if (playerDead!)
+            {
+                if (currentItemGetter == "")
+                {
+                    Console.WriteLine("You didn't get any item\n   Press enter to exit");
+                }
+                else
+                {
+                    Console.WriteLine($"You got {currentItemGetter}\n   Press enter to exit");
+                }
+                string? userInput = Console.ReadLine();
+            }
         }
-
-
-
     }
 }
